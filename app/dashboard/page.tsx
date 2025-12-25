@@ -920,7 +920,7 @@ return (
 
 {session && (
 
-<div className="flex items-center gap-2 text-sm text-gray-800">
+<div className="flex items-center gap-2 text-sm text-gray-600">
 
 {isSyncing ? (
 
@@ -952,7 +952,7 @@ return (
 
 <div className="text-xl sm:text-2xl font-bold text-orange-600">{loginStreak}</div>
 
-<div className="text-xs text-gray-800">Day Streak</div>
+<div className="text-xs text-gray-600">Day Streak</div>
 
 </div>
 
@@ -964,7 +964,7 @@ return (
 
 {session && (
 
-<div className="mt-2 text-sm text-gray-800">
+<div className="mt-2 text-sm text-gray-600">
 
 Signed in as {session.user?.email}
 
@@ -1003,7 +1003,7 @@ activeTab === tab.id
 
 ? 'bg-blue-600 text-white shadow-lg'
 
-: 'bg-white text-gray-800 hover:bg-gray-50'
+: 'bg-white text-gray-600 hover:bg-gray-50'
 
 }`}
 
@@ -1038,7 +1038,7 @@ Quick Tasks
 
 <div className="mb-3">
 
-<div className="flex justify-between text-xs text-gray-800 mb-1">
+<div className="flex justify-between text-xs text-gray-600 mb-1">
 
 <span>{todos.filter(t => t.completed).length} of {todos.length} done</span>
 
@@ -1080,7 +1080,7 @@ className="w-4 h-4"
 
 />
 
-<span className={`${todo.completed ? 'line-through text-gray-800' : ''} break-words`}>
+<span className={`${todo.completed ? 'line-through text-gray-600' : ''} break-words`}>
 
 {todo.text}
 
@@ -1109,7 +1109,7 @@ Study Time Today
 
 <div className="text-3xl sm:text-4xl font-bold text-blue-600">{formatTime(studyTimeToday + getCurrentSessionTime())}</div>
 
-<div className="text-sm sm:text-base text-gray-800">Time Studied</div>
+<div className="text-sm sm:text-base text-gray-600">Time Studied</div>
 
 {isStudying && (
 
@@ -1164,7 +1164,7 @@ return (
 
 <div className="flex items-center justify-between gap-3 mb-2">
 
-<div className="text-xs sm:text-sm font-semibold text-gray-800">
+<div className="text-xs sm:text-sm font-semibold text-gray-600">
 
 {new Date(date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
 
@@ -1204,7 +1204,7 @@ return (
 
 {Object.entries(events).filter(([date]) => new Date(date) >= new Date(new Date().setHours(0, 0, 0, 0))).length === 0 && (
 
-<div className="text-gray-800 text-center py-8 text-base">No upcoming events</div>
+<div className="text-gray-600 text-center py-8 text-base">No upcoming events</div>
 
 )}
 
@@ -1312,7 +1312,7 @@ return `${seconds}s`;
 
 </div>
 
-<div className="text-lg sm:text-xl text-gray-800 mb-6">
+<div className="text-lg sm:text-xl text-gray-600 mb-6">
 
 {isStudying ? 'Currently Studying' : 'Total Today'}
 
@@ -1392,9 +1392,9 @@ isStudying
 
 <div className="flex justify-between items-center mb-2">
 
-<span className="text-sm font-medium text-gray-800">Progress</span>
+<span className="text-sm font-medium text-gray-700">Progress</span>
 
-<span className="text-sm font-medium text-gray-800">
+<span className="text-sm font-medium text-gray-700">
 
 {todos.filter(t => t.completed).length} / {todos.length} completed
 
@@ -1422,7 +1422,7 @@ style={{ width: `${todos.length > 0 ? (todos.filter(t => t.completed).length / t
 
 </span>
 
-<span className="text-sm text-gray-800 ml-1">Complete</span>
+<span className="text-sm text-gray-600 ml-1">Complete</span>
 
 </div>
 
@@ -1444,7 +1444,7 @@ onKeyPress={(e) => e.key === 'Enter' && addTodo()}
 
 placeholder="Add a new task..."
 
-className="flex-1 px-3 sm:px-4 py-2 border border-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
 
 />
 
@@ -1482,7 +1482,7 @@ className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
 
 />
 
-<span className={`flex-1 break-words ${todo.completed ? 'line-through text-gray-800' : ''}`}>
+<span className={`flex-1 break-words ${todo.completed ? 'line-through text-gray-600' : ''}`}>
 
 {todo.text}
 
@@ -1523,7 +1523,7 @@ className="text-red-500 hover:text-red-700 flex-shrink-0"
 
 <div>
 
-<label className="block text-sm font-medium text-gray-800 mb-1">Date</label>
+<label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
 
 <input
 
@@ -1541,7 +1541,7 @@ className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none
 
 <div>
 
-<label className="block text-sm font-medium text-gray-800 mb-1">Time</label>
+<label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
 
 <input
 
@@ -1559,7 +1559,7 @@ className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none
 
 <div className="sm:col-span-2 lg:col-span-2">
 
-<label className="block text-sm font-medium text-gray-800 mb-1">Event</label>
+<label className="block text-sm font-medium text-gray-700 mb-1">Event</label>
 
 <input
 
@@ -1703,7 +1703,7 @@ className="text-red-500 hover:text-red-700 flex-shrink-0"
 
 {(events[selectedDate.toDateString()] || []).length === 0 && (
 
-<p className="text-gray-800 text-center py-4">No events for this date</p>
+<p className="text-gray-500 text-center py-4">No events for this date</p>
 
 )}
 
