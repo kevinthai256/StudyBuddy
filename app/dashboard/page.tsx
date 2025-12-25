@@ -1444,7 +1444,7 @@ onKeyPress={(e) => e.key === 'Enter' && addTodo()}
 
 placeholder="Add a new task..."
 
-className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+className="flex-1 px-3 sm:px-4 py-2 border border-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
 
 />
 
