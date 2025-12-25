@@ -1,37 +1,57 @@
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
+import { getFirestore, Firestore } from 'firebase-admin/firestore';
 
 // Initialize Firebase Admin (server-side only)
-if (!getApps().length) {
-  const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
-    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
-    : null;
+function initializeFirebaseAdmin(): Firestore | null {
+  if (!getApps().length) {
+    try {
+      const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
+        ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
+        : null;
 
-  if (serviceAccount) {
-    initializeApp({
-      credential: cert(serviceAccount),
-    });
-  } else {
-    // Fallback: try using individual env vars (for easier setup)
-    const projectId = process.env.FIREBASE_PROJECT_ID;
-    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+      if (serviceAccount) {
+        initializeApp({
+          credential: cert(serviceAccount),
+        });
+      } else {
+        // Fallback: try using individual env vars (for easier setup)
+        const projectId = process.env.FIREBASE_PROJECT_ID;
+        const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+        const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
-    if (projectId && clientEmail && privateKey) {
-      initializeApp({
-        credential: cert({
-          projectId,
-          clientEmail,
-          privateKey,
-        }),
-      });
-    } else {
-      console.warn('Firebase not initialized - missing credentials');
+        if (projectId && clientEmail && privateKey) {
+          initializeApp({
+            credential: cert({
+              projectId,
+              clientEmail,
+              privateKey,
+            }),
+          });
+        } else {
+          // During build, env vars might not be available - this is OK
+          if (process.env.NODE_ENV !== 'production' || process.env.VERCEL) {
+            console.warn('Firebase Admin not initialized - missing credentials (this is OK during build)');
+          }
+          return null;
+        }
+      }
+    } catch (error) {
+      // During build, initialization might fail - this is OK
+      if (process.env.NODE_ENV !== 'production' || process.env.VERCEL) {
+        console.warn('Failed to initialize Firebase Admin during build (this is OK):', error);
+      }
+      return null;
     }
   }
+  
+  // Only get Firestore if app is initialized
+  try {
+    return getFirestore();
+  } catch (error) {
+    console.error('Failed to get Firestore instance:', error);
+    return null;
+  }
 }
-
-export const db = getFirestore();
 
 // User data structure type
 export interface UserData {
@@ -42,10 +62,26 @@ export interface UserData {
   lastLogin: string;
 }
 
+// Lazy initialization - only initialize when actually needed (at runtime)
+let db: Firestore | null = null;
+
+// Helper function to get Firestore instance (lazy initialization)
+function getDb(): Firestore {
+  if (!db) {
+    const initializedDb = initializeFirebaseAdmin();
+    if (!initializedDb) {
+      throw new Error('Firebase Admin is not initialized. Please check your FIREBASE_SERVICE_ACCOUNT_KEY environment variable.');
+    }
+    db = initializedDb;
+  }
+  return db;
+}
+
 // Helper functions for Firestore operations
 export async function getUserData(userId: string): Promise<UserData | null> {
   try {
-    const userDoc = await db.collection('users').doc(userId).get();
+    const firestoreDb = getDb();
+    const userDoc = await firestoreDb.collection('users').doc(userId).get();
     
     if (!userDoc.exists) {
       return null;
@@ -61,7 +97,8 @@ export async function getUserData(userId: string): Promise<UserData | null> {
 
 export async function saveUserData(userId: string, data: UserData): Promise<void> {
   try {
-    await db.collection('users').doc(userId).set(data, { merge: true });
+    const firestoreDb = getDb();
+    await firestoreDb.collection('users').doc(userId).set(data, { merge: true });
   } catch (error) {
     console.error('Error saving user data to Firestore:', error);
     throw error;
