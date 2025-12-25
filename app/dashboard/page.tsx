@@ -574,7 +574,7 @@ function StudyDashboardContent() {
 
             <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
               <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 flex items-center gap-2">
-                <Upload className="text-blue-600" size={18} />
+                <Clock className="text-blue-600" size={18} />
                 Study Time Today
               </h3>
               <div className="text-center">
