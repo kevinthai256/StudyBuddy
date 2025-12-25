@@ -1,20 +1,11 @@
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
+import { getAnalytics, Analytics } from 'firebase/analytics';
 
-// Extract project ID from service account key if available
-let projectIdFromServiceAccount: string | undefined;
-try {
-  if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
-    projectIdFromServiceAccount = serviceAccount.project_id;
-  }
-} catch (error) {
-  console.warn('Failed to parse FIREBASE_SERVICE_ACCOUNT_KEY:', error);
-}
-
-// Firebase configuration - use service account project_id as fallback
-const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || projectIdFromServiceAccount;
+// Firebase configuration
+// Note: Only NEXT_PUBLIC_* env vars are available on the client side
+const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 
 // Firebase configuration
 const firebaseConfig = {
@@ -30,24 +21,38 @@ const firebaseConfig = {
 let app: FirebaseApp;
 let auth: Auth;
 let db: Firestore;
+let analytics: Analytics | undefined;
 
 if (typeof window !== 'undefined') {
   // Only initialize on client side
-  if (!getApps().length) {
-    app = initializeApp(firebaseConfig);
+  // Validate required config
+  if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+    console.error('Firebase client config is missing. Please add NEXT_PUBLIC_FIREBASE_API_KEY and NEXT_PUBLIC_FIREBASE_PROJECT_ID to your .env file.');
+    // Create dummy objects to prevent crashes
+    app = {} as FirebaseApp;
+    auth = {} as Auth;
+    db = {} as Firestore;
+    analytics = undefined;
   } else {
-    app = getApps()[0];
+    if (!getApps().length) {
+      app = initializeApp(firebaseConfig);
+    } else {
+      app = getApps()[0];
+    }
+    
+    auth = getAuth(app);
+    db = getFirestore(app);
+    analytics = getAnalytics(app);
   }
-  
-  auth = getAuth(app);
-  db = getFirestore(app);
 } else {
   // Server-side: create dummy objects to prevent errors
   // These won't be used on server-side
+  app = {} as FirebaseApp;
   auth = {} as Auth;
   db = {} as Firestore;
+  analytics = undefined;
 }
 
-export { app, auth, db };
+export { app, auth, db, analytics };
 export default app;
 
