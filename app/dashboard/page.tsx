@@ -1392,9 +1392,9 @@ isStudying
 
 <div className="flex justify-between items-center mb-2">
 
-<span className="text-sm font-medium text-gray-700">Progress</span>
+<span className="text-sm font-medium text-gray-800">Progress</span>
 
-<span className="text-sm font-medium text-gray-700">
+<span className="text-sm font-medium text-gray-800">
 
 {todos.filter(t => t.completed).length} / {todos.length} completed
 
@@ -1523,7 +1523,7 @@ className="text-red-500 hover:text-red-700 flex-shrink-0"
 
 <div>
 
-<label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+<label className="block text-sm font-medium text-gray-800 mb-1">Date</label>
 
 <input
 
@@ -1541,7 +1541,7 @@ className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none
 
 <div>
 
-<label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+<label className="block text-sm font-medium text-gray-800 mb-1">Time</label>
 
 <input
 
@@ -1559,7 +1559,7 @@ className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none
 
 <div className="sm:col-span-2 lg:col-span-2">
 
-<label className="block text-sm font-medium text-gray-700 mb-1">Event</label>
+<label className="block text-sm font-medium text-gray-800 mb-1">Event</label>
 
 <input
 
@@ -1703,7 +1703,7 @@ className="text-red-500 hover:text-red-700 flex-shrink-0"
 
 {(events[selectedDate.toDateString()] || []).length === 0 && (
 
-<p className="text-gray-700 text-center py-4">No events for this date</p>
+<p className="text-gray-800 text-center py-4">No events for this date</p>
 
 )}
 
