@@ -263,7 +263,7 @@ function StudyDashboardContent() {
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Hello {firstName}!</h1>
             <div className="flex items-center gap-3">
               {session && (
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-gray-800">
                   {isSyncing ? (
                     <><div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div><span>Syncing...</span></>
                   ) : lastSyncTime ? (
@@ -312,7 +312,7 @@ function StudyDashboardContent() {
                 {todos.slice(0, 5).map(todo => (
                   <div key={todo.id} className="flex items-center gap-2">
                     <input type="checkbox" checked={todo.completed} onChange={() => handleToggleTodo(todo.id)} className="w-4 h-4" />
-                    <span className={`${todo.completed ? 'line-through text-gray-400' : ''} break-words`}>{todo.text}</span>
+                    <span className={`${todo.completed ? 'line-through text-gray-600' : ''} break-words`}>{todo.text}</span>
                   </div>
                 ))}
               </div>
@@ -348,7 +348,7 @@ function StudyDashboardContent() {
                       ) : null;
                     })
                   ).filter(Boolean)}
-                {Object.entries(events).filter(([d]) => new Date(d) >= new Date().setHours(0,0,0,0)).length === 0 && <div className="text-gray-400 text-center py-8 text-base">No upcoming events</div>}
+                {Object.entries(events).filter(([d]) => new Date(d) >= new Date().setHours(0,0,0,0)).length === 0 && <div className="text-gray-600 text-center py-8 text-base">No upcoming events</div>}
               </div>
             </div>
           </div>
@@ -404,7 +404,7 @@ function StudyDashboardContent() {
               {todos.map(todo => (
                 <div key={todo.id} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-50 rounded-lg text-sm sm:text-base">
                   <input type="checkbox" checked={todo.completed} onChange={() => handleToggleTodo(todo.id)} className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                  <span className={`flex-1 break-words ${todo.completed ? 'line-through text-gray-400' : ''}`}>{todo.text}</span>
+                  <span className={`flex-1 break-words ${todo.completed ? 'line-through text-gray-600' : ''}`}>{todo.text}</span>
                   <button onClick={() => handleDeleteTodo(todo.id)} className="text-red-500 hover:text-red-700 flex-shrink-0"><Trash2 size={16} className="sm:w-[18px] sm:h-[18px]" /></button>
                 </div>
               ))}
@@ -442,7 +442,7 @@ function StudyDashboardContent() {
                     <button onClick={() => handleDeleteEvent(selectedDate.toDateString(), e.id)} className="text-red-500 hover:text-red-700"><Trash2 size={16} /></button>
                   </div>
                 ))}
-                {(events[selectedDate.toDateString()] || []).length === 0 && <p className="text-gray-500 text-center py-4">No events for this date</p>}
+                {(events[selectedDate.toDateString()] || []).length === 0 && <p className="text-gray-700 text-center py-4">No events for this date</p>}
               </div>
             </div>
           </div>
