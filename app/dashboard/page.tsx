@@ -102,7 +102,7 @@ function StudyDashboardContent() {
 
   const handleAddEvent = async () => {
     if (!newEvent.trim()) return;
-    // Fix: Parse date parts to avoid UTC shift
+    // Fix: Parse date parts manually to avoid UTC shift bug
     const [year, month, day] = newEventDate.split('-').map(Number);
     const eventDate = new Date(year, month - 1, day); 
     const dateKey = eventDate.toDateString();
@@ -116,7 +116,7 @@ function StudyDashboardContent() {
   const handleDeleteEvent = async (dateKey: string, eventId: number) => {
     const nextEvents = { ...events };
     nextEvents[dateKey] = nextEvents[dateKey].filter(e => e.id !== eventId);
-    if (nextEvents[dateKey].length === 0) delete nextEvents[dateKey];
+    if (nextEvents[dateKey]?.length === 0) delete nextEvents[dateKey];
     setEvents(nextEvents);
     await syncData({ events: nextEvents });
   };
@@ -134,7 +134,7 @@ function StudyDashboardContent() {
     }
   };
 
-  // --- Utilities & Logic ---
+  // --- Logic Helpers ---
   const getCurrentSessionTime = (): number => (isStudying && studyStartTime) ? Math.floor((new Date().getTime() - studyStartTime.getTime()) / 1000) : 0;
 
   const getTimeUntilEvent = (dateStr: string, timeStr?: string) => {
@@ -151,8 +151,8 @@ function StudyDashboardContent() {
     }
     const diff = eventDate.getTime() - new Date().getTime();
     if (diff <= 0) return (dateStr === new Date().toDateString()) ? "TODAY" : null;
-    const days = Math.floor(diff / 86400000), hrs = Math.floor((diff % 86400000) / 3600000), mins = Math.floor((diff % 3600000) / 60000);
-    return days > 0 ? `${days}d ${hrs}h` : hrs > 0 ? `${hrs}h ${mins}m` : `${mins}m`;
+    const d = Math.floor(diff / 86400000), hr = Math.floor((diff % 86400000) / 3600000), min = Math.floor((diff % 3600000) / 60000);
+    return d > 0 ? `${d}d ${hr}h` : hr > 0 ? `${hr}h ${min}m` : `${min}m`;
   };
 
   const chartData = useMemo(() => {
@@ -201,7 +201,6 @@ function StudyDashboardContent() {
     return days;
   };
 
-  // --- Effects ---
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), isStudying ? 1000 : 60000);
     return () => clearInterval(timer);
@@ -233,26 +232,24 @@ function StudyDashboardContent() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <h1 className="text-2xl sm:text-3xl font-black text-gray-900">Hello {session?.user?.name?.split(' ')[0] || '!'}</h1>
             <div className="flex items-center gap-3">
-              {session && (
-                <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
-                  {isSyncing ? <><Loader2 className="animate-spin text-blue-600" size={16}/><span>Syncing...</span></> : lastSyncTime ? <span className="text-green-700">✓ Synced</span> : null}
-                </div>
-              )}
+              <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
+                {isSyncing ? <><Loader2 className="animate-spin text-blue-600" size={16}/><span>Syncing...</span></> : lastSyncTime ? <span className="text-green-700">✓ Synced</span> : null}
+              </div>
               <div className="flex items-center gap-2 bg-orange-100 px-4 py-2 rounded-lg border border-orange-200">
                 <Flame className="text-orange-600" size={20} />
-                <div className="text-xl sm:text-2xl font-black text-orange-700">{loginStreak} <span className="text-xs font-bold text-gray-700">Day Streak</span></div>
+                <div className="text-xl sm:text-2xl font-black text-orange-700">{loginStreak} <span className="text-xs font-bold text-gray-700">Streak</span></div>
               </div>
             </div>
           </div>
         </header>
 
-        <div className="flex flex-col sm:flex-row gap-2 mb-6">
+        <nav className="flex flex-col sm:flex-row gap-2 mb-6">
           {['overview', 'todos', 'timer', 'calendar'].map(id => (
             <button key={id} onClick={() => setActiveTab(id)} className={`px-6 py-3 rounded-lg font-black transition-all capitalize ${activeTab === id ? 'bg-blue-700 text-white shadow-lg scale-105' : 'bg-white text-gray-700 border border-gray-200'}`}>
-              {id === 'todos' ? 'To-Do List' : id === 'timer' ? 'Study Timer' : id}
+              {id === 'todos' ? 'Tasks' : id === 'timer' ? 'Timer' : id}
             </button>
           ))}
-        </div>
+        </nav>
 
         {activeTab === 'overview' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -275,9 +272,9 @@ function StudyDashboardContent() {
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-              <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-gray-900"><Calendar className="text-blue-700"/>Upcoming</h3>
+              <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-gray-900"><Calendar className="text-blue-700"/>Schedule</h3>
               <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
-                {Object.entries(events).sort(([a],[b]) => new Date(a).getTime() - new Date(b).getTime()).filter(([d]) => new Date(d) >= new Date().setHours(0,0,0,0)).slice(0, 5).flatMap(([dk, evts]) => 
+                {Object.entries(events).sort(([a],[b]) => new Date(a).getTime() - new Date(b).getTime()).filter(([d]) => new Date(d) >= new Date().setHours(0,0,0,0)).slice(0, 8).flatMap(([dk, evts]) => 
                   evts.map(e => {
                     const cd = getTimeUntilEvent(dk, e.time);
                     if (!cd) return null;
@@ -291,7 +288,7 @@ function StudyDashboardContent() {
                           </div>
                           <div className="text-sm font-black text-gray-900">{e.text}</div>
                         </div>
-                        <button onClick={() => handleDeleteEvent(dk, e.id)} className="bg-white border-2 border-emerald-500 text-emerald-600 p-2 rounded-full hover:bg-emerald-500 hover:text-white transition-all shadow-sm flex-shrink-0"><CheckSquare size={18}/></button>
+                        <button onClick={() => handleDeleteEvent(dk, e.id)} className="bg-white border-2 border-emerald-500 text-emerald-600 p-2 rounded-full hover:bg-emerald-500 hover:text-white transition-all"><CheckSquare size={18}/></button>
                       </div>
                     );
                   })
@@ -351,17 +348,25 @@ function StudyDashboardContent() {
               <h3 className="font-black text-xl mb-4 uppercase">Schedule for {selectedDate.toDateString()}</h3>
               <div className="space-y-3">
                 {(events[selectedDate.toDateString()] || []).sort((a,b) => (a.time||'').localeCompare(b.time||'')).map(e => (
-                  <div key={e.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200 shadow-sm transition hover:bg-white">
+                  <div key={e.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200 transition hover:bg-white">
                     <span className="text-base font-bold text-gray-900">{e.time && <span className="text-blue-700 font-black mr-2">{e.time} —</span>}{e.text}</span>
                     <button onClick={() => handleDeleteEvent(selectedDate.toDateString(), e.id)} className="text-red-600 p-1"><Trash2 size={20}/></button>
                   </div>
                 ))}
-                {!(events[selectedDate.toDateString()] || []).length && <p className="text-gray-500 font-black text-center py-6 italic border-2 border-dashed border-gray-200 rounded-xl">Nothing scheduled</p>}
               </div>
             </div>
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+// Next.js Default Export Wrapper
+export default function StudyDashboard() {
+  return (
+    <SessionProvider>
+      <StudyDashboardContent />
+    </SessionProvider>
   );
 }
