@@ -302,13 +302,26 @@ function StudyDashboardContent() {
                 </div>
               </div>    
             </div>
-              <div className="space-y-3">
-                {todos.slice(0, 5).map(t => (
-                  <div key={t.id} className="flex items-center gap-3">
-                    <input type="checkbox" checked={t.completed} onChange={() => handleToggleTodo(t.id)} className="w-5 h-5 border-[var(--color-border-secondary)] text-[var(--color-primary)] rounded"/>
-                    <span className={`text-base font-bold ${t.completed ? 'line-through text-[var(--color-text-blue)]' : 'text-[var(--color-text-primary)]'}`}>{t.text}</span>
-                  </div>
-                ))}
+              <div className="space-y-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                {todos.length > 0 ? (
+                  todos.map(t => (
+                    <div key={t.id} className="flex items-center gap-3">
+                      <input 
+                        type="checkbox" 
+                        checked={t.completed} 
+                        onChange={() => handleToggleTodo(t.id)} 
+                        className="w-5 h-5 border-[var(--color-border-secondary)] text-[var(--color-primary)] rounded"
+                      />
+                      <span className={`text-base font-bold truncate ${t.completed ? 'line-through text-[var(--color-text-blue)]' : 'text-[var(--color-text-primary)]'}`}>
+                        {t.text}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-sm font-bold text-[var(--color-text-secondary)] py-4">
+                    No tasks for today!
+                  </p>
+                )}
               </div>
             </div>
 
