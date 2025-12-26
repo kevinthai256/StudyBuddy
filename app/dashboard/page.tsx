@@ -159,7 +159,7 @@ function StudyDashboardContent() {
           const key = d.toDateString();
           return (studySessions[key] || 0) + (key === today ? getCurrentSessionTime() : 0);
         }),
-        borderColor: 'rgb(59, 130, 246)', tension: 0.4, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.1)'
+        borderColor: 'rgba(59, 162, 246, 1)', tension: 0.4, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.1)'
       }]
     };
   }, [studySessions, isStudying, currentTime]);
@@ -192,7 +192,7 @@ function StudyDashboardContent() {
       <div className="flex items-center gap-2">
         <button
           onClick={() => signIn('google')}
-          className="flex items-center gap-2 bg-[var(--color-accent)] text-white px-3 py-2 rounded-lg text-sm"
+          className="flex items-center gap-2 bg-[var(--color-primary)] text-white px-3 py-2 rounded-lg text-sm"
           title="Switch account"
         >
           <User size={16} />
@@ -239,7 +239,7 @@ function StudyDashboardContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--color-gradient-start)] to-[var(--color-gradient-end)] p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <header className="bg-[var(--color-surface)] rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-[var(--color-border)]">
+        <header className="bg-[var(--color-surface)] rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <AuthControls />
             <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-primary)]">Hello {session?.user?.name?.split(' ')[0] || '!'}!</h1>
@@ -249,8 +249,8 @@ function StudyDashboardContent() {
                   {isSyncing ? <><Loader2 className="animate-spin text-[var(--color-sync-loading)]" size={16}/><span>Syncing...</span></> : lastSyncTime ? <span className="text-[var(--color-sync-success)]">✓ Synced</span> : null}
                 </div>
               )}
-              <div className="flex items-center gap-2 bg-[var(--color-streak-bg)] px-4 py-2 rounded-lg border border-[var(--color-border)]">
-                <Flame className="text-[var(--color-accent)]" size={20} />
+              <div className="flex items-center gap-2 bg-[var(--color-streak-bg)] px-4 py-2 rounded-lg">
+                <Flame className="text-[var(--color-background)]" size={20} />
                 <div className="text-xl sm:text-2xl font-black text-[var(--color-streak-text)]">{loginStreak}</div>
               </div>
             </div>
@@ -258,21 +258,45 @@ function StudyDashboardContent() {
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="bg-[var(--color-surface)] rounded-lg p-6 border border-[var(--color-border)]">
-              <h3 className="text-xl font-black text-[var(--color-text-primary)] gap-2 mb-6 flex items-center justify-center w-ful">
+            <div className="bg-[var(--color-surface)] rounded-lg p-6">
+              <h3 className="text-xl font-black text-[var(--color-text-primary)] gap-2 mb-4 flex items-center justify-center w-ful">
                 Tasks
               </h3>
+              <div className="bg-[var(--color-surface)] rounded-lg p-6">
+              {/* Progress Bar Container */}
+              <div className="mb-6">
+                <div className="flex justify-between items-end mb-2">
+                  <span className="text-sm font-black text-[var(--color-text-primary)] uppercase">Completion</span>
+                  <span className="text-sm font-black text-[var(--color-text-primary)]">
+                    {todos.length > 0 
+                      ? Math.round((todos.filter(t => t.completed).length / todos.length) * 100) 
+                      : 0}%
+                  </span>
+                </div>
+                
+                {/* The Bar Track */}
+                <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden border-4 border-white">
+                  <div
+                    className="h-full rounded-full transition-all duration-500 ease-out"
+                    style={{ 
+                      width: `${todos.length > 0 ? (todos.filter(t => t.completed).length / todos.length) * 100 : 0}%`,
+                      backgroundColor: 'var(--color-primary, #3b82f6)' // Fallback to blue-500 if variable fails
+                    }}
+                  ></div>
+                </div>
+              </div>    
+            </div>
               <div className="space-y-3">
                 {todos.slice(0, 5).map(t => (
                   <div key={t.id} className="flex items-center gap-3">
-                    <input type="checkbox" checked={t.completed} onChange={() => handleToggleTodo(t.id)} className="w-5 h-5 border-[var(--color-border)] text-[var(--color-primary)] rounded"/>
-                    <span className={`text-base font-bold ${t.completed ? 'line-through text-[var(--color-text-muted)]' : 'text-[var(--color-text-primary)]'}`}>{t.text}</span>
+                    <input type="checkbox" checked={t.completed} onChange={() => handleToggleTodo(t.id)} className="w-5 h-5 border-[var(--color-border-secondary)] text-[var(--color-primary)] rounded"/>
+                    <span className={`text-base font-bold ${t.completed ? 'line-through text-[var(--color-text-blue)]' : 'text-[var(--color-text-primary)]'}`}>{t.text}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-[var(--color-timer-display)] rounded-lg py-12 px-6 border border-gray-200 flex flex-col items-center justify-center w-full h-full">
+            <div className="bg-[var(--color-primary)] rounded-lg py-12 px-6 flex flex-col items-center justify-center w-full h-full">
 
             {/* Time Display Section */}
             <div className="flex flex-col items-center justify-center flex-1 w-full">
@@ -285,7 +309,7 @@ function StudyDashboardContent() {
               <div className="relative flex items-center justify-center w-full mt-6 h-12 px-6">
                 
                 {/* The Text - Centered and bold */}
-                <span className="text-sm font-black text-[var(--color-text-secondary)] uppercase tracking-[0.3em] z-10">
+                <span className="text-sm font-black text-[var(--color-text-primary)] uppercase tracking-[0.3em] z-10">
                   Today's Total
                 </span>
               </div>
@@ -305,7 +329,7 @@ function StudyDashboardContent() {
             </div>
           </div>
 
-            <div className="bg-[var(--color-surface)] rounded-lg p-6 border border-[var(--color-border)]">
+            <div className="bg-[var(--color-surface)] rounded-lg p-6">
               <h3 className="text-xl font-black text-[var(--color-text-primary)] gap-2 mb-6 flex items-center justify-center w-ful">
                 Schedule
               </h3>
@@ -322,13 +346,13 @@ function StudyDashboardContent() {
                     return (
                       <div 
                         key={e.id} 
-                        className={`p-4 rounded-xl border flex items-center justify-between gap-4 sm:gap-6 ${
+                        className={`p-4 rounded-xl flex items-center justify-between gap-4 sm:gap-6 ${
                           isToday 
-                            ? 'bg-[var(--color-surface-secondary)] border-[var(--color-primary)] border-l-[10px]' 
-                            : 'bg-[var(--color-surface-secondary)] border-[var(--color-border)] border-l-[6px]'
+                            ? 'bg-[var(--color-surface-secondary)]' 
+                            : 'bg-[var(--color-surface-secondary)]'
                         }`}
                       >
-                        {/* Left Content Area: Holds Date, Countdown, and Description */}
+                        {/* Content Area: Holds Date, Countdown, and Description */}
                         <div className="flex-1 min-w-0"> 
                           <div className="flex flex-wrap items-center gap-3 mb-2">
                             {/* Date Text */}
@@ -337,15 +361,15 @@ function StudyDashboardContent() {
                             </span>
                             
                             {/* Countdown Box - flex-shrink-0 ensures it never squishes */}
-                            <span className={`text-[12px] sm:text-[14px] font-black px-4 py-1.5 rounded-mdflex-shrink-0 min-w-[70px] text-center ${
-                              isToday ? 'bg-[var(--color-primary)] text-[var(--color-surface)] animate-pulse' : 'bg-[var(--color-accent)] text-[var(--color-streak-text)]'
+                            <span className={`text-[12px] sm:text-[14px] font-black px-4 py-1.5 rounded-md shadow-sm flex-shrink-0 min-w-[70px] text-center ${
+                              isToday ? 'bg-[var(--color-secondary)] text-[var(--color-text-primary)] animate-pulse' : 'bg-[var(--color-primary)] text-[var(--color-text-primary)]'
                             }`}>
                               {cd.toUpperCase()}
                             </span>
                           </div>
                           
                           {/* Description - truncate or wrap based on preference */}
-                          <div className="text-lg font-black text-[var(--color-text-primary)] leading-tight break-words">
+                          <div className="text-lg font-black text-[var(--color-surface)] leading-tight break-words">
                             {e.text}
                           </div>
                         </div>
@@ -354,9 +378,8 @@ function StudyDashboardContent() {
                         <div className="flex-shrink-0 self-center">
                           <button 
                             onClick={() => handleDeleteEvent(dk, e.id)} 
-                            className="bg-[var(--color-surface)] border-2 border-[var(--color-success)] text-[var(--color-success)] p-2.5 rounded-full hover:bg-[var(--color-success)] hover:text-[var(--color-surface)] transition-all active:scale-90"
+                            className="bg-[var(--color-surface)] border-2 border-[var(--color-progress-bar)] text-[var(--color-surface)] p-2.5 rounded-full hover:bg-[var(--color-secondary)] hover:text-[var(--color-surface)] transition-all shadow-sm active:scale-90"
                           >
-                            <CheckSquare size={13}/>
                           </button>
                         </div>
                       </div>
@@ -365,30 +388,30 @@ function StudyDashboardContent() {
                 ).filter(Boolean)}
               </div>
             </div>
-            <div className="lg:col-span-3 bg-[var(--color-surface)] rounded-lg p-6 border border-[var(--color-border)] h-80"><Line data={chartData} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }} /></div>
+            <div className="lg:col-span-3 bg-white rounded-lg p-6 h-80"><Line data={chartData} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }} /></div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
           <Link 
             href="/dashboard" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-primary)] text-[var(--color-surface)] active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-primary)] text-[var(--color-text-primary)] active:scale-95 text-sm sm:text-base"
           >
             Dashboard
           </Link>
           <Link 
             href="/timer" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] hover:bg-[var(--color-surface-secondary)] active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base"
           >
             Timer
           </Link>
           <Link 
             href="/todos" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] hover:bg-[var(--color-surface-secondary)] active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base"
           >
             Tasks
           </Link>
           <Link 
             href="/schedule" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] hover:bg-[var(--color-surface-secondary)] active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base"
           >
             Schedule
           </Link>

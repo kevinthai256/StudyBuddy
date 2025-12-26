@@ -107,7 +107,7 @@ function StudyTodosContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--color-gradient-start)] to-[var(--color-gradient-end)] p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <header className="bg-[var(--color-surface)] rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-[var(--color-border)]">
+        <header className="bg-[var(--color-surface)] rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-primary)]">Tasks</h1>
             <div className="flex items-center gap-3">
@@ -116,24 +116,24 @@ function StudyTodosContent() {
                   {isSyncing ? <><Loader2 className="animate-spin text-[var(--color-sync-loading)]" size={16}/><span>Syncing...</span></> : lastSyncTime ? <span className="text-[var(--color-sync-success)]">✓ Synced</span> : null}
                 </div>
               )}
-              <div className="flex items-center gap-2 bg-[var(--color-streak-bg)] px-4 py-2 rounded-lg border border-[var(--color-border)]">
-                <Flame className="text-[var(--color-accent)]" size={20} />
+              <div className="flex items-center gap-2 bg-[var(--color-streak-bg)] px-4 py-2 rounded-lg">
+                <Flame className="text-[var(--color-background)]" size={20} />
                 <div className="text-xl sm:text-2xl font-black text-[var(--color-streak-text)]">{loginStreak}</div>
               </div>
             </div>
           </div>
         </header>
 
-        <div className="bg-[var(--color-surface)] rounded-lg p-8 border border-[var(--color-border)] max-w-2xl mx-auto">
+        <div className="bg-[var(--color-surface)] rounded-lg p-8 max-w-2xl mx-auto">
           <div className="flex gap-2 mb-6">
-            <input type="text" value={newTodo} onChange={e => setNewTodo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddTodo()} placeholder="New task..." className="flex-1 px-4 py-3 border border-[var(--color-border-secondary)] rounded-lg text-base font-bold"/>
-            <button onClick={handleAddTodo} className="bg-[var(--color-primary)] text-[var(--color-surface)] px-8 rounded-lg font-black hover:bg-[var(--color-primary-hover)]">Add</button>
+            <input type="text" value={newTodo} onChange={e => setNewTodo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddTodo()} placeholder="New task..." className="flex-1 px-4 py-3 text-[var(--color-text-primary)] border-2 border-[var(--color-background)] rounded-lg text-base font-bold"/>
+            <button onClick={handleAddTodo} className="bg-[var(--color-primary)] text-[var(--color-text-primary)] px-8 rounded-lg font-black hover:bg-[var(--color-primary-hover)]">Add</button>
           </div>
           <div className="space-y-3">
             {todos.map(t => (
-              <div key={t.id} className="flex items-center gap-3 p-3 bg-[var(--color-surface-secondary)] rounded-lg border border-[var(--color-border)]">
-                <input type="checkbox" checked={t.completed} onChange={() => handleToggleTodo(t.id)} className="w-5 h-5 border-[var(--color-border-secondary)] text-[var(--color-primary)] rounded"/>
-                <span className={`flex-1 font-bold ${t.completed ? 'line-through text-[var(--color-text-muted)]' : 'text-[var(--color-text-primary)]'}`}>{t.text}</span>
+              <div key={t.id} className="flex items-center gap-3 p-3 bg-[var(--color-surface-secondary)] rounded-lg">
+                <input type="checkbox" checked={t.completed} onChange={() => handleToggleTodo(t.id)} className="w-5 h-5 border-[var(---color-surface-secondary)] text-[var(--color-primary)] rounded"/>
+                <span className={`flex-1 font-bold ${t.completed ? 'line-through text-[var(--color-surface-hover)]' : 'text-[var(--color-surface)]'}`}>{t.text}</span>
                 <button onClick={() => handleDeleteTodo(t.id)} className="text-[var(--color-error)] p-1 hover:text-[var(--color-error-hover)]"><Trash2 size={18}/></button>
               </div>
             ))}
@@ -142,25 +142,25 @@ function StudyTodosContent() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
           <Link 
             href="/dashboard" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] shadow-sm hover:bg-[var(--color-surface-secondary)] active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base"
           >
             Dashboard
           </Link>
           <Link 
             href="/timer" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] shadow-sm hover:bg-[var(--color-surface-secondary)] active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base"
           >
             Timer
           </Link>
           <Link 
             href="/todos" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-primary)] text-[var(--color-surface)] shadow-lg shadow-blue-200 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-primary)] text-[var(--color-text-primary)] active:scale-95 text-sm sm:text-base"
           >
             Tasks
           </Link>
           <Link 
             href="/schedule" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] shadow-sm hover:bg-[var(--color-surface-secondary)] active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base"
           >
             Schedule
           </Link>
