@@ -102,7 +102,6 @@ function StudyDashboardContent() {
 
   const handleAddEvent = async () => {
     if (!newEvent.trim()) return;
-    // Fix: Parse date parts manually to avoid UTC shift bug
     const [year, month, day] = newEventDate.split('-').map(Number);
     const eventDate = new Date(year, month - 1, day); 
     const dateKey = eventDate.toDateString();
@@ -225,6 +224,9 @@ function StudyDashboardContent() {
 
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
+  // Helper for type-safe date comparison
+  const todayStart = new Date().setHours(0, 0, 0, 0);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
@@ -232,9 +234,11 @@ function StudyDashboardContent() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <h1 className="text-2xl sm:text-3xl font-black text-gray-900">Hello {session?.user?.name?.split(' ')[0] || '!'}</h1>
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
-                {isSyncing ? <><Loader2 className="animate-spin text-blue-600" size={16}/><span>Syncing...</span></> : lastSyncTime ? <span className="text-green-700">✓ Synced</span> : null}
-              </div>
+              {session && (
+                <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
+                  {isSyncing ? <><Loader2 className="animate-spin text-blue-600" size={16}/><span>Syncing...</span></> : lastSyncTime ? <span className="text-green-700">✓ Synced</span> : null}
+                </div>
+              )}
               <div className="flex items-center gap-2 bg-orange-100 px-4 py-2 rounded-lg border border-orange-200">
                 <Flame className="text-orange-600" size={20} />
                 <div className="text-xl sm:text-2xl font-black text-orange-700">{loginStreak} <span className="text-xs font-bold text-gray-700">Streak</span></div>
@@ -243,13 +247,13 @@ function StudyDashboardContent() {
           </div>
         </header>
 
-        <nav className="flex flex-col sm:flex-row gap-2 mb-6">
+        <div className="flex flex-col sm:flex-row gap-2 mb-6">
           {['overview', 'todos', 'timer', 'calendar'].map(id => (
             <button key={id} onClick={() => setActiveTab(id)} className={`px-6 py-3 rounded-lg font-black transition-all capitalize ${activeTab === id ? 'bg-blue-700 text-white shadow-lg scale-105' : 'bg-white text-gray-700 border border-gray-200'}`}>
               {id === 'todos' ? 'Tasks' : id === 'timer' ? 'Timer' : id}
             </button>
           ))}
-        </nav>
+        </div>
 
         {activeTab === 'overview' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -274,7 +278,10 @@ function StudyDashboardContent() {
             <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
               <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-gray-900"><Calendar className="text-blue-700"/>Schedule</h3>
               <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
-                {Object.entries(events).sort(([a],[b]) => new Date(a).getTime() - new Date(b).getTime()).filter(([d]) => new Date(d) >= new Date().setHours(0,0,0,0)).slice(0, 8).flatMap(([dk, evts]) => 
+                {Object.entries(events)
+                  .sort(([a],[b]) => new Date(a).getTime() - new Date(b).getTime())
+                  .filter(([d]) => new Date(d).getTime() >= todayStart) // Fix applied here
+                  .slice(0, 8).flatMap(([dk, evts]) => 
                   evts.map(e => {
                     const cd = getTimeUntilEvent(dk, e.time);
                     if (!cd) return null;
