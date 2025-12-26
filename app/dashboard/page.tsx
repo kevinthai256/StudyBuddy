@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Calendar, CheckSquare, Flame, Plus, Trash2, ChevronLeft, ChevronRight, Clock, CloudCheck, CloudOff, Loader2 } from 'lucide-react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
@@ -40,16 +41,10 @@ function StudyDashboardContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
   
-  const [activeTab, setActiveTab] = useState('overview');
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [newTodo, setNewTodo] = useState('');
   const [loginStreak, setLoginStreak] = useState(0);
   const [lastLogin, setLastLogin] = useState('');
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [events, setEvents] = useState<Record<string, Event[]>>({});
-  const [newEvent, setNewEvent] = useState('');
-  const [newEventTime, setNewEventTime] = useState('');
-  const [newEventDate, setNewEventDate] = useState(new Date().toISOString().split('T')[0]);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
@@ -80,36 +75,10 @@ function StudyDashboardContent() {
   }, [session, todos, studySessions, events, loginStreak, lastLogin]);
 
   // --- Mutations ---
-  const handleAddTodo = async () => {
-    if (!newTodo.trim()) return;
-    const nextTodos = [...todos, { id: Date.now(), text: newTodo, completed: false }];
-    setTodos(nextTodos);
-    setNewTodo('');
-    await syncData({ todos: nextTodos });
-  };
-
   const handleToggleTodo = async (id: number) => {
     const nextTodos = todos.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
     setTodos(nextTodos);
     await syncData({ todos: nextTodos });
-  };
-
-  const handleDeleteTodo = async (id: number) => {
-    const nextTodos = todos.filter(t => t.id !== id);
-    setTodos(nextTodos);
-    await syncData({ todos: nextTodos });
-  };
-
-  const handleAddEvent = async () => {
-    if (!newEvent.trim()) return;
-    const [year, month, day] = newEventDate.split('-').map(Number);
-    const eventDate = new Date(year, month - 1, day); 
-    const dateKey = eventDate.toDateString();
-    const nextEvents = { ...events, [dateKey]: [...(events[dateKey] || []), { id: Date.now(), text: newEvent, time: newEventTime }] };
-    setEvents(nextEvents);
-    setNewEvent('');
-    setNewEventTime('');
-    await syncData({ events: nextEvents });
   };
 
   const handleDeleteEvent = async (dateKey: string, eventId: number) => {
@@ -118,24 +87,6 @@ function StudyDashboardContent() {
     if (nextEvents[dateKey]?.length === 0) delete nextEvents[dateKey];
     setEvents(nextEvents);
     await syncData({ events: nextEvents });
-  };
-
-  const handleStopStudy = async () => {
-    if (studyStartTime) {
-      const duration = Math.floor((new Date().getTime() - studyStartTime.getTime()) / 1000);
-      const today = new Date().toDateString();
-      const nextSessions = { ...studySessions, [today]: (studySessions[today] || 0) + duration };
-      setStudySessions(nextSessions);
-      setStudyTimeToday(nextSessions[today]);
-      setIsStudying(false);
-      setStudyStartTime(null);
-      await syncData({ studySessions: nextSessions });
-    }
-  };
-
-  const startStudySession = () => {
-    setIsStudying(true);
-    setStudyStartTime(new Date());
   };
 
   // --- Logic Helpers ---
@@ -185,26 +136,6 @@ function StudyDashboardContent() {
 
   const formatStopwatch = (s: number) => `${Math.floor(s / 3600).toString().padStart(2, '0')}:${Math.floor((s % 3600) / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
 
-  const renderCalendar = () => {
-    const firstDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
-    const lastDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
-    const days = [];
-    for (let i = 0; i < firstDay.getDay(); i++) days.push(<div key={`e-${i}`} className="h-16 sm:h-20 border border-gray-200 bg-gray-50"></div>);
-    for (let d = 1; d <= lastDay.getDate(); d++) {
-      const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), d);
-      const key = date.toDateString();
-      const isToday = key === new Date().toDateString();
-      const hasEvents = (events[key] || []).length;
-      days.push(
-        <div key={d} onClick={() => setSelectedDate(date)} className={`h-16 sm:h-20 border border-gray-200 p-1 cursor-pointer transition-colors hover:bg-blue-50 ${isToday ? 'bg-blue-100 ring-2 ring-inset ring-blue-500' : 'bg-white'}`}>
-          <div className={`font-black text-sm sm:text-base ${isToday ? 'text-blue-800' : 'text-gray-900'}`}>{d}</div>
-          {hasEvents > 0 && <div className="text-[10px] sm:text-xs font-black text-blue-700">{hasEvents} Event(s)</div>}
-        </div>
-      );
-    }
-    return days;
-  };
-
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), isStudying ? 1000 : 60000);
     return () => clearInterval(timer);
@@ -227,8 +158,6 @@ function StudyDashboardContent() {
     }
   }, [status, session]);
 
-  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
   // Helper for type-safe date comparison
   const todayStart = new Date().setHours(0, 0, 0, 0);
 
@@ -237,7 +166,7 @@ function StudyDashboardContent() {
       <div className="max-w-7xl mx-auto">
         <header className="bg-white rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-200">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-black text-gray-900">Hello {session?.user?.name?.split(' ')[0] || '!'}</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-gray-900">Hello {session?.user?.name?.split(' ')[0] || '!'}!</h1>
             <div className="flex items-center gap-3">
               {session && (
                 <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
@@ -253,15 +182,12 @@ function StudyDashboardContent() {
         </header>
 
         <div className="flex flex-col sm:flex-row gap-2 mb-6">
-          {['overview', 'todos', 'timer', 'calendar'].map(id => (
-            <button key={id} onClick={() => setActiveTab(id)} className={`px-6 py-3 rounded-lg font-black transition-all capitalize ${activeTab === id ? 'bg-blue-700 text-white shadow-lg scale-105' : 'bg-white text-gray-700 border border-gray-200'}`}>
-              {id === 'todos' ? 'Tasks' : id === 'timer' ? 'Timer' : id}
-            </button>
-          ))}
+          <Link href="/dashboard" className="px-6 py-3 rounded-lg font-black transition-all bg-blue-700 text-white shadow-lg scale-105">Overview</Link>
+          <Link href="/timer" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Timer</Link>
+          <Link href="/todos" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Tasks</Link>
+          <Link href="/calendar" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Calendar</Link>
         </div>
-
-        {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="bg-white rounded-lg p-6 border border-gray-200">
               <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-gray-900"><CheckSquare className="text-blue-700"/>Quick Tasks</h3>
               <div className="space-y-3">
@@ -309,139 +235,6 @@ function StudyDashboardContent() {
             </div>
             <div className="lg:col-span-3 bg-white rounded-lg p-6 border border-gray-200 h-80"><Line data={chartData} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }} /></div>
           </div>
-        )}
-
-        {activeTab === 'timer' && (
-          <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-
-          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Study Timer</h2>
-
-
-          <div className="text-center mb-6">
-
-          <div className="text-6xl sm:text-8xl font-mono font-bold text-blue-600 mb-4">
-
-          {isStudying ? formatStopwatch(getCurrentSessionTime()) : formatStopwatch(studyTimeToday)}
-
-          </div>
-
-          <div className="text-lg sm:text-xl text-gray-600 mb-6">
-
-          {isStudying ? 'Currently Studying' : 'Total Today'}
-
-          </div>
-
-
-          <button
-
-          onClick={isStudying ? handleStopStudy : startStudySession}
-
-          className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all transform hover:scale-105 ${
-
-          isStudying
-
-          ? 'bg-red-500 hover:bg-red-600'
-
-          : 'bg-green-500 hover:bg-green-600'
-
-          }`}
-
-          >
-
-          {isStudying ? 'Stop Studying' : 'Start Studying'}
-
-          </button>
-
-          </div>
-
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-          <div className="bg-blue-50 p-4 rounded-lg">
-
-          <h3 className="font-semibold text-blue-800 mb-2">Today's Progress</h3>
-
-          <div className="text-2xl font-bold text-blue-600">{formatTime(studyTimeToday + getCurrentSessionTime())}</div>
-
-          <div className="text-sm text-blue-600">Time spent studying</div>
-
-          </div>
-
-
-          <div className="bg-green-50 p-4 rounded-lg">
-
-          <h3 className="font-semibold text-green-800 mb-2">Current Session</h3>
-
-          <div className="text-2xl font-bold text-green-600">
-
-          {isStudying ? formatStopwatch(getCurrentSessionTime()) : '00:00:00'}
-
-          </div>
-
-          <div className="text-sm text-green-600">
-
-          {isStudying ? 'Active' : 'Not studying'}
-
-          </div>
-
-          </div>
-
-          </div>
-
-          </div>
-        )}
-
-        {activeTab === 'todos' && (
-          <div className="bg-white rounded-lg p-8 border border-gray-200 max-w-2xl mx-auto">
-            <div className="flex gap-2 mb-6">
-              <input type="text" value={newTodo} onChange={e => setNewTodo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddTodo()} placeholder="New task..." className="flex-1 px-4 py-3 border border-gray-400 rounded-lg text-base font-bold"/>
-              <button onClick={handleAddTodo} className="bg-blue-700 text-white px-8 rounded-lg font-black">Add</button>
-            </div>
-            <div className="space-y-3">
-              {todos.map(t => (
-                <div key={t.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                  <input type="checkbox" checked={t.completed} onChange={() => handleToggleTodo(t.id)} className="w-5 h-5 border-gray-400 text-blue-700 rounded"/>
-                  <span className={`flex-1 font-bold ${t.completed ? 'line-through text-gray-400' : 'text-gray-900'}`}>{t.text}</span>
-                  <button onClick={() => handleDeleteTodo(t.id)} className="text-red-500 p-1"><Trash2 size={18}/></button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'calendar' && (
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <div className="mb-8 bg-gray-50 p-6 rounded-xl border border-gray-200">
-              <h3 className="text-xl font-black mb-4">Add Event</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Date</label><input type="date" value={newEventDate} onChange={e => setNewEventDate(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-base font-bold"/></div>
-                <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Time</label><input type="time" value={newEventTime} onChange={e => setNewEventTime(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-base font-bold"/></div>
-                <div className="lg:col-span-2"><label className="block text-xs font-black uppercase text-gray-700 mb-1">Event</label><input type="text" value={newEvent} onChange={e => setNewEvent(e.target.value)} placeholder="Description..." className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-base font-bold"/></div>
-              </div>
-              <button onClick={handleAddEvent} className="bg-blue-700 text-white px-10 py-3 rounded-lg font-black transition hover:bg-blue-800 active:scale-95">Add Event</button>
-            </div>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-black">{monthNames[selectedDate.getMonth()]} {selectedDate.getFullYear()}</h2>
-              <div className="flex gap-2">
-                <button onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1))} className="p-2 border border-gray-300 rounded-lg"><ChevronLeft/></button>
-                <button onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1))} className="p-2 border border-gray-300 rounded-lg"><ChevronRight/></button>
-              </div>
-            </div>
-            <div className="grid grid-cols-7 mb-2 bg-gray-100 text-center font-black py-2 uppercase text-xs">{['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => <div key={d}>{d}</div>)}</div>
-            <div className="grid grid-cols-7 border-l border-t border-gray-200">{renderCalendar()}</div>
-            <div className="mt-8 border-t-4 border-gray-200 pt-6">
-              <h3 className="font-black text-xl mb-4 uppercase">Schedule for {selectedDate.toDateString()}</h3>
-              <div className="space-y-3">
-                {(events[selectedDate.toDateString()] || []).sort((a,b) => (a.time||'').localeCompare(b.time||'')).map(e => (
-                  <div key={e.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200 transition hover:bg-white">
-                    <span className="text-base font-bold text-gray-900">{e.time && <span className="text-blue-700 font-black mr-2">{e.time} —</span>}{e.text}</span>
-                    <button onClick={() => handleDeleteEvent(selectedDate.toDateString(), e.id)} className="text-red-600 p-1"><Trash2 size={20}/></button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
