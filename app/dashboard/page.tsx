@@ -246,16 +246,47 @@ function StudyDashboardContent() {
                     const cd = getTimeUntilEvent(dk, e.time);
                     if (!cd) return null;
                     const isToday = dk === new Date().toDateString();
+                    
                     return (
-                      <div key={e.id} className={`p-3 rounded-xl border flex items-center justify-between gap-3 ${isToday ? 'bg-blue-50 border-blue-300 border-l-8' : 'bg-gray-50 border-gray-200 border-l-4'}`}>
-                        <div className="flex-1">
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="text-[12px] font-black uppercase text-gray-600">{isToday ? 'Today' : new Date(dk).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}</span>
-                            <span className={`text-[12px] font-black px-3 py-1 rounded ${isToday ? 'bg-blue-700 text-white animate-pulse' : 'bg-orange-200 text-orange-900'}`}>{cd.toUpperCase()}</span>
+                      <div 
+                        key={e.id} 
+                        className={`p-4 rounded-xl border flex items-center justify-between gap-4 sm:gap-6 ${
+                          isToday 
+                            ? 'bg-blue-50 border-blue-300 border-l-[10px]' 
+                            : 'bg-gray-50 border-gray-200 border-l-[6px]'
+                        }`}
+                      >
+                        {/* Left Content Area: Holds Date, Countdown, and Description */}
+                        <div className="flex-1 min-w-0"> 
+                          <div className="flex flex-wrap items-center gap-3 mb-2">
+                            {/* Date Text */}
+                            <span className="text-[14px] sm:text-[16px] font-black uppercase text-gray-600 truncate">
+                              {isToday ? 'Today' : new Date(dk).toLocaleDateString('en-US', {month: 'long', day: 'numeric'})}
+                            </span>
+                            
+                            {/* Countdown Box - flex-shrink-0 ensures it never squishes */}
+                            <span className={`text-[12px] sm:text-[14px] font-black px-4 py-1.5 rounded-md shadow-sm flex-shrink-0 min-w-[70px] text-center ${
+                              isToday ? 'bg-blue-700 text-white animate-pulse' : 'bg-orange-200 text-orange-900'
+                            }`}>
+                              {cd.toUpperCase()}
+                            </span>
                           </div>
-                          <div className="text-sm font-black text-gray-900">{e.text}</div>
+                          
+                          {/* Description - truncate or wrap based on preference */}
+                          <div className="text-lg font-black text-gray-900 leading-tight break-words">
+                            {e.text}
+                          </div>
                         </div>
-                        <button onClick={() => handleDeleteEvent(dk, e.id)} className="bg-white border-2 border-emerald-500 text-emerald-600 p-2 rounded-full hover:bg-emerald-500 hover:text-white transition-all"><CheckSquare size={14}/></button>
+
+                        {/* Right Action: The Checkbox Button */}
+                        <div className="flex-shrink-0 self-center">
+                          <button 
+                            onClick={() => handleDeleteEvent(dk, e.id)} 
+                            className="bg-white border-2 border-emerald-500 text-emerald-600 p-2.5 rounded-full hover:bg-emerald-500 hover:text-white transition-all shadow-sm active:scale-90"
+                          >
+                            <CheckSquare size={13}/>
+                          </button>
+                        </div>
                       </div>
                     );
                   })
