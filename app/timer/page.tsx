@@ -162,7 +162,7 @@ function StudyTimerContent() {
                   : 'bg-green-500 hover:bg-green-600'
               }`}
             >
-              {isStudying ? 'Stop Studying' : 'Start Studying'}
+              {isStudying ? 'STOP!' : 'START!'}
             </button>
           </div>
 
