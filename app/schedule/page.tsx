@@ -131,7 +131,7 @@ function StudyScheduleContent() {
       <div className="max-w-7xl mx-auto">
         <header className="bg-white rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-200">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-black text-gray-900">Hello {session?.user?.name?.split(' ')[0] || '!'}!</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-blue-900">Countdown Schedule</h1>
             <div className="flex items-center gap-3">
               {session && (
                 <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
@@ -148,7 +148,6 @@ function StudyScheduleContent() {
 
         <div className="bg-white rounded-lg p-6 border border-gray-200">
           <div className="mb-8">
-            <h3 className="font-black text-xl text-gray-700 mb-4 uppercase">Upcoming Events</h3>
             <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
               {Object.entries(events)
                 .sort(([a],[b]) => new Date(a).getTime() - new Date(b).getTime())

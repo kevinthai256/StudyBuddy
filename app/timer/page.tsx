@@ -129,7 +129,7 @@ function StudyTimerContent() {
       <div className="max-w-7xl mx-auto">
         <header className="bg-white rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-200">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-black text-gray-900">Hello {session?.user?.name?.split(' ')[0] || '!'}!</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-blue-900">Study Timer</h1>
             <div className="flex items-center gap-3">
               {session && (
                 <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
@@ -145,13 +145,11 @@ function StudyTimerContent() {
         </header>
 
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-700 mb-4 sm:mb-6">Study Timer</h2>
-
           <div className="text-center mb-6">
             <div className="text-6xl sm:text-8xl font-mono font-bold text-blue-600 mb-4">
               {isStudying ? formatStopwatch(getCurrentSessionTime()) : formatStopwatch(studyTimeToday)}
             </div>
-            <div className="text-lg sm:text-xl text-gray-600 mb-6">
+            <div className="text-sm font-black text-gray-500 uppercase tracking-[0.3em] mt-3 mb-6">
               {isStudying ? 'Currently Studying' : 'Total Today'}
             </div>
             <button
@@ -168,18 +166,14 @@ function StudyTimerContent() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-blue-800 mb-2">Today's Progress</h3>
+              <h3 className="font-semibold uppercase text-blue-800 tracking-[0.3em] mt-3 mb-2">Today's Total</h3>
               <div className="text-2xl font-bold text-blue-600">{formatTime(studyTimeToday + getCurrentSessionTime())}</div>
-              <div className="text-sm text-blue-600">Time spent studying</div>
             </div>
 
             <div className="bg-green-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-green-800 mb-2">Current Session</h3>
+              <h3 className="font-semibold uppercase text-green-800 tracking-[0.3em] mt-3 mb-2">Current Session</h3>
               <div className="text-2xl font-bold text-green-600">
                 {isStudying ? formatStopwatch(getCurrentSessionTime()) : '00:00:00'}
-              </div>
-              <div className="text-sm text-green-600">
-                {isStudying ? 'Active' : 'Not studying'}
               </div>
             </div>
           </div>

@@ -201,7 +201,7 @@ function StudyDashboardContent() {
       <div className="max-w-7xl mx-auto">
         <header className="bg-white rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-200">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-black text-gray-900">Hello {session?.user?.name?.split(' ')[0] || '!'}!</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-blue-900">Hello {session?.user?.name?.split(' ')[0] || '!'}!</h1>
             <div className="flex items-center gap-3">
               {session && (
                 <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
@@ -218,7 +218,9 @@ function StudyDashboardContent() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-gray-900"><CheckSquare className="text-blue-700"/>Quick Tasks</h3>
+              <h3 className="text-xl font-black text-blue-500 gap-2 mb-6 flex items-center justify-center w-ful">
+                Tasks
+              </h3>
               <div className="space-y-3">
                 {todos.slice(0, 5).map(t => (
                   <div key={t.id} className="flex items-center gap-3">
@@ -229,14 +231,38 @@ function StudyDashboardContent() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg p-6 border border-gray-200 text-center">
-              <h3 className="text-lg font-black mb-4 flex items-center justify-center gap-2 text-gray-900"><Clock className="text-blue-700"/>Focused Time</h3>
-              <div className="text-5xl font-black text-blue-800 mb-1">{formatTime(studyTimeToday + getCurrentSessionTime())}</div>
-              {isStudying && <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 rounded-full font-black text-xs animate-pulse">LIVE: {formatStopwatch(getCurrentSessionTime())}</div>}
+            <div className="bg-white rounded-lg py-12 px-6 border border-gray-200 shadow-sm flex flex-col items-center justify-center w-full h-full">
+
+            {/* Time Display Section */}
+            <div className="flex flex-col items-center justify-center flex-1 w-full">
+              {/* Main Text - Increased size for maximum "fill" */}
+              <div className="text-7xl sm:text-8xl font-black text-blue-900 tracking-tighter leading-none tabular-nums">
+                {formatTime(studyTimeToday + getCurrentSessionTime())}
+              </div>
+              
+              <div className="text-sm font-black text-gray-500 uppercase tracking-[0.3em] mt-3">
+                Today's Total
+              </div>
+
+              {/* Live Status Section */}
+              {isStudying && (
+                <div className="mt-8 flex justify-center w-full">
+                  <div className="inline-flex items-center gap-4 px-8 py-3 bg-green-100 border-2 border-green-200 text-green-900 rounded-full font-black text-2xl animate-pulse shadow-sm">
+                    <span className="relative flex h-4 w-4">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-4 w-4 bg-green-600"></span>
+                    </span>
+                    LIVE: {formatStopwatch(getCurrentSessionTime())}
+                  </div>
+                </div>
+              )}
             </div>
+          </div>
 
             <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-gray-900"><Calendar className="text-blue-700"/>Schedule</h3>
+              <h3 className="text-xl font-black text-blue-500 gap-2 mb-6 flex items-center justify-center w-ful">
+                Schedule
+              </h3>
               <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
                 {Object.entries(events)
                   .sort(([a],[b]) => new Date(a).getTime() - new Date(b).getTime())
