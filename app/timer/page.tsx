@@ -189,11 +189,11 @@ function StudyTimerContent() {
             href="/dashboard" 
             className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
           >
-            Overview
+            Dashboard
           </Link>
           <Link 
             href="/timer" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-blue-700 text-white shadow-lg shadow-blue-200 active:scale-95 text-sm sm:text-base"
           >
             Timer
           </Link>
@@ -205,7 +205,7 @@ function StudyTimerContent() {
           </Link>
           <Link 
             href="/schedule" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-blue-700 text-white shadow-lg shadow-blue-200 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
           >
             Schedule
           </Link>

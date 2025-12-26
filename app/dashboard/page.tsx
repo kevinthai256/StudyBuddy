@@ -267,9 +267,9 @@ function StudyDashboardContent() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
           <Link 
             href="/dashboard" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-blue-700 text-white shadow-lg shadow-blue-200 active:scale-95 text-sm sm:text-base"
           >
-            Overview
+            Dashboard
           </Link>
           <Link 
             href="/timer" 
@@ -285,7 +285,7 @@ function StudyDashboardContent() {
           </Link>
           <Link 
             href="/schedule" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-blue-700 text-white shadow-lg shadow-blue-200 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
           >
             Schedule
           </Link>
