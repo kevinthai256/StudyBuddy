@@ -290,12 +290,12 @@ function StudyDashboardContent() {
                       <div key={e.id} className={`p-3 rounded-xl border flex items-center justify-between gap-3 ${isToday ? 'bg-blue-50 border-blue-300 border-l-8' : 'bg-gray-50 border-gray-200 border-l-4'}`}>
                         <div className="flex-1">
                           <div className="flex justify-between items-center mb-1">
-                            <span className="text-[10px] font-black uppercase text-gray-600">{isToday ? 'Today' : new Date(dk).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}</span>
-                            <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${isToday ? 'bg-blue-700 text-white animate-pulse' : 'bg-orange-200 text-orange-900'}`}>{cd.toUpperCase()}</span>
+                            <span className="text-[12px] font-black uppercase text-gray-600">{isToday ? 'Today' : new Date(dk).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}</span>
+                            <span className={`text-[12px] font-black px-3 py-1 rounded ${isToday ? 'bg-blue-700 text-white animate-pulse' : 'bg-orange-200 text-orange-900'}`}>{cd.toUpperCase()}</span>
                           </div>
                           <div className="text-sm font-black text-gray-900">{e.text}</div>
                         </div>
-                        <button onClick={() => handleDeleteEvent(dk, e.id)} className="bg-white border-2 border-emerald-500 text-emerald-600 p-2 rounded-full hover:bg-emerald-500 hover:text-white transition-all"><CheckSquare size={18}/></button>
+                        <button onClick={() => handleDeleteEvent(dk, e.id)} className="bg-white border-2 border-emerald-500 text-emerald-600 p-2 rounded-full hover:bg-emerald-500 hover:text-white transition-all"><CheckSquare size={14}/></button>
                       </div>
                     );
                   })
