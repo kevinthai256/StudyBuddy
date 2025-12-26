@@ -42,6 +42,7 @@ function StudyScheduleContent() {
   const [newEventDate, setNewEventDate] = useState(new Date().toISOString().split('T')[0]);
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
+  const [isAddingEvent, setIsAddingEvent] = useState(false);
 
   // --- Optimized Sync Engine ---
   const syncData = useCallback(async (overrides: Partial<DashboardData> = {}) => {
@@ -146,16 +147,7 @@ function StudyScheduleContent() {
         </header>
 
         <div className="bg-white rounded-lg p-6 border border-gray-200">
-          <div className="mb-8 bg-gray-50 p-6 rounded-xl border border-gray-200">
-            <h3 className="text-xl font-black text-gray-700 mb-4">Add Event</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-              <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Date</label><input type="date" value={newEventDate} onChange={e => setNewEventDate(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-gray-500 font-bold"/></div>
-              <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Time</label><input type="time" value={newEventTime} onChange={e => setNewEventTime(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-gray-500 font-bold"/></div>
-              <div className="lg:col-span-2"><label className="block text-xs font-black uppercase text-gray-700 mb-1">Event</label><input type="text" value={newEvent} onChange={e => setNewEvent(e.target.value)} placeholder="Description..." className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-gray-500 font-bold"/></div>
-            </div>
-            <button onClick={handleAddEvent} className="bg-blue-700 text-white px-10 py-3 rounded-lg font-black transition hover:bg-blue-800 active:scale-95">Add Event</button>
-          </div>
-          <div className="mt-8">
+          <div className="mb-8">
             <h3 className="font-black text-xl text-gray-700 mb-4 uppercase">Upcoming Events</h3>
             <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
               {Object.entries(events)
@@ -181,6 +173,23 @@ function StudyScheduleContent() {
                 })
               ).filter(Boolean)}
             </div>
+          </div>
+          <div className="mt-8">
+            <button onClick={() => setIsAddingEvent(!isAddingEvent)} className="w-full flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors font-medium">
+              <Plus size={20} />
+              {isAddingEvent ? 'Hide Add Event' : 'Add Event'}
+            </button>
+            {isAddingEvent && (
+              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-4">
+                <h3 className="text-xl font-black text-gray-700 mb-4">Add Event</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                  <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Date</label><input type="date" value={newEventDate} onChange={e => setNewEventDate(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-gray-500 font-bold"/></div>
+                  <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Time</label><input type="time" value={newEventTime} onChange={e => setNewEventTime(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-gray-500 font-bold"/></div>
+                  <div className="lg:col-span-2"><label className="block text-xs font-black uppercase text-gray-700 mb-1">Event</label><input type="text" value={newEvent} onChange={e => setNewEvent(e.target.value)} placeholder="Description..." className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-gray-500 font-bold"/></div>
+                </div>
+                <button onClick={handleAddEvent} className="bg-blue-700 text-white px-10 py-3 rounded-lg font-black transition hover:bg-blue-800 active:scale-95">Add Event</button>
+              </div>
+            )}
           </div>
         </div>
         {/* --- OPTIMIZED NAVIGATION BUTTONS --- */}
