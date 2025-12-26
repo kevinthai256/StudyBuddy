@@ -183,11 +183,32 @@ function StudyScheduleContent() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row gap-2 mb-6">
-          <Link href="/dashboard" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Overview</Link>
-          <Link href="/timer" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Timer</Link>
-          <Link href="/todos" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Tasks</Link>
-          <Link href="/schedule" className="px-6 py-3 rounded-lg font-black transition-all bg-blue-700 text-white scale-105">Schedule</Link>
+        {/* --- OPTIMIZED NAVIGATION BUTTONS --- */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+          <Link 
+            href="/dashboard" 
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
+          >
+            Overview
+          </Link>
+          <Link 
+            href="/timer" 
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
+          >
+            Timer
+          </Link>
+          <Link 
+            href="/todos" 
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
+          >
+            Tasks
+          </Link>
+          <Link 
+            href="/schedule" 
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-blue-700 text-white shadow-lg shadow-blue-200 active:scale-95 text-sm sm:text-base"
+          >
+            Schedule
+          </Link>
         </div>
       </div>
     </div>
