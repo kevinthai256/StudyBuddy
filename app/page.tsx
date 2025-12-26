@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { SessionProvider, signIn, useSession } from 'next-auth/react';
 import { BookOpen, LogIn, ArrowRight } from 'lucide-react';
 
@@ -30,12 +31,18 @@ function LoginPageContent() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="bg-blue-600 p-3 rounded-full">
-              <BookOpen className="w-8 h-8 text-white" />
+            <div className="rounded-full flex items-center justify-center">
+              <Image 
+                src="/icon0.svg" 
+                alt="Icon" 
+                width={64} 
+                height={64} 
+                className="invert-0" // Use 'invert' if you need to turn a black SVG white
+              />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Study Dashboard</h1>
-          <p className="text-gray-600">Welcome to your study companion</p>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Study Buddy</h1>
+          <p className="text-gray-600">Say hello to your study companion!</p>
         </div>
 
         {/* Login Options */}
@@ -62,13 +69,12 @@ function LoginPageContent() {
             className="w-full flex items-center justify-center gap-3 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-lg transition-colors font-medium"
           >
             <ArrowRight size={20} />
-            Continue without saving progress
+            Continue with Demo Mode
           </button>
 
           <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <p className="text-sm text-blue-800 font-medium mb-1">About</p>
             <p className="text-xs text-blue-600">
-              Sign in with Google to sync your progress across devices. Continue without saving to use the app locally.
+              Sign in with Google to sync your progress across devices. Continue in Demo Mode to use the app locally without saving progress.
             </p>
           </div>
         </div>
@@ -76,7 +82,7 @@ function LoginPageContent() {
         {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-sm text-gray-500">
-            Study smarter, not harder
+          Prioritize consistency with your study buddy!
           </p>
         </div>
       </div>
