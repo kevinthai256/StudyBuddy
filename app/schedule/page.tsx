@@ -45,20 +45,22 @@ function StudyScheduleContent() {
 
   // --- Optimized Sync Engine ---
   const syncData = useCallback(async (overrides: Partial<DashboardData> = {}) => {
-    if (!session) return;
-    setIsSyncing(true);
     const finalData = { events, loginStreak, lastLogin, ...overrides };
-    try {
-      const response = await fetch('/api/sync', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: finalData }),
-      });
-      if (response.ok) {
-        setLastSyncTime(new Date());
-        storage.set('study_events', finalData.events);
-      }
-    } catch (error) { console.error('Cloud Sync Error:', error); } finally { setIsSyncing(false); }
+    if (session) {
+      setIsSyncing(true);
+      try {
+        const response = await fetch('/api/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: finalData }),
+        });
+        if (response.ok) {
+          setLastSyncTime(new Date());
+        }
+      } catch (error) { console.error('Cloud Sync Error:', error); } finally { setIsSyncing(false); }
+    }
+    // Always save to localStorage
+    storage.set('study_events', finalData.events);
   }, [session, events, loginStreak, lastLogin]);
 
   const handleAddEvent = async () => {
@@ -100,8 +102,8 @@ function StudyScheduleContent() {
   };
 
   useEffect(() => {
-    if (status === 'authenticated' && session) {
-      (async () => {
+    const loadData = async () => {
+      if (status === 'authenticated' && session) {
         setIsSyncing(true);
         try {
           const res = await fetch('/api/sync');
@@ -112,8 +114,13 @@ function StudyScheduleContent() {
             setLastLogin(data.lastLogin || '');
           }
         } finally { setIsSyncing(false); }
-      })();
-    }
+      } else if (status === 'unauthenticated') {
+        // Load from localStorage for demo mode
+        const eventsData = await storage.get('study_events');
+        if (eventsData?.value) setEvents(JSON.parse(eventsData.value));
+      }
+    };
+    loadData();
   }, [status, session]);
 
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

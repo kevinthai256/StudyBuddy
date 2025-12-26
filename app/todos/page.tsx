@@ -43,20 +43,22 @@ function StudyTodosContent() {
 
   // --- Optimized Sync Engine ---
   const syncData = useCallback(async (overrides: Partial<DashboardData> = {}) => {
-    if (!session) return;
-    setIsSyncing(true);
     const finalData = { todos, loginStreak, lastLogin, ...overrides };
-    try {
-      const response = await fetch('/api/sync', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: finalData }),
-      });
-      if (response.ok) {
-        setLastSyncTime(new Date());
-        storage.set('study_todos', finalData.todos);
-      }
-    } catch (error) { console.error('Cloud Sync Error:', error); } finally { setIsSyncing(false); }
+    if (session) {
+      setIsSyncing(true);
+      try {
+        const response = await fetch('/api/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: finalData }),
+        });
+        if (response.ok) {
+          setLastSyncTime(new Date());
+        }
+      } catch (error) { console.error('Cloud Sync Error:', error); } finally { setIsSyncing(false); }
+    }
+    // Always save to localStorage
+    storage.set('study_todos', finalData.todos);
   }, [session, todos, loginStreak, lastLogin]);
 
   // --- Mutations ---
@@ -81,8 +83,8 @@ function StudyTodosContent() {
   };
 
   useEffect(() => {
-    if (status === 'authenticated' && session) {
-      (async () => {
+    const loadData = async () => {
+      if (status === 'authenticated' && session) {
         setIsSyncing(true);
         try {
           const res = await fetch('/api/sync');
@@ -93,8 +95,13 @@ function StudyTodosContent() {
             setLastLogin(data.lastLogin || '');
           }
         } finally { setIsSyncing(false); }
-      })();
-    }
+      } else if (status === 'unauthenticated') {
+        // Load from localStorage for demo mode
+        const todosData = await storage.get('study_todos');
+        if (todosData?.value) setTodos(JSON.parse(todosData.value));
+      }
+    };
+    loadData();
   }, [status, session]);
 
   return (

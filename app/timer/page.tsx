@@ -46,20 +46,22 @@ function StudyTimerContent() {
 
   // --- Optimized Sync Engine ---
   const syncData = useCallback(async (overrides: Partial<DashboardData> = {}) => {
-    if (!session) return;
-    setIsSyncing(true);
     const finalData = { studySessions, loginStreak, lastLogin, ...overrides };
-    try {
-      const response = await fetch('/api/sync', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: finalData }),
-      });
-      if (response.ok) {
-        setLastSyncTime(new Date());
-        storage.set('study_sessions', finalData.studySessions);
-      }
-    } catch (error) { console.error('Cloud Sync Error:', error); } finally { setIsSyncing(false); }
+    if (session) {
+      setIsSyncing(true);
+      try {
+        const response = await fetch('/api/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: finalData }),
+        });
+        if (response.ok) {
+          setLastSyncTime(new Date());
+        }
+      } catch (error) { console.error('Cloud Sync Error:', error); } finally { setIsSyncing(false); }
+    }
+    // Always save to localStorage
+    storage.set('study_sessions', finalData.studySessions);
   }, [session, studySessions, loginStreak, lastLogin]);
 
   const startStudySession = () => {
@@ -96,8 +98,8 @@ function StudyTimerContent() {
   }, [isStudying]);
 
   useEffect(() => {
-    if (status === 'authenticated' && session) {
-      (async () => {
+    const loadData = async () => {
+      if (status === 'authenticated' && session) {
         setIsSyncing(true);
         try {
           const res = await fetch('/api/sync');
@@ -109,8 +111,17 @@ function StudyTimerContent() {
             setStudyTimeToday(data.studySessions?.[new Date().toDateString()] || 0);
           }
         } finally { setIsSyncing(false); }
-      })();
-    }
+      } else if (status === 'unauthenticated') {
+        // Load from localStorage for demo mode
+        const sessionsData = await storage.get('study_sessions');
+        if (sessionsData?.value) {
+          const sessions = JSON.parse(sessionsData.value);
+          setStudySessions(sessions);
+          setStudyTimeToday(sessions[new Date().toDateString()] || 0);
+        }
+      }
+    };
+    loadData();
   }, [status, session]);
 
   return (

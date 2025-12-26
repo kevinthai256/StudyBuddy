@@ -56,23 +56,58 @@ function StudyDashboardContent() {
 
   // --- Optimized Sync Engine ---
   const syncData = useCallback(async (overrides: Partial<DashboardData> = {}) => {
-    if (!session) return;
-    setIsSyncing(true);
     const finalData = { todos, studySessions, events, loginStreak, lastLogin, ...overrides };
-    try {
-      const response = await fetch('/api/sync', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: finalData }),
-      });
-      if (response.ok) {
-        setLastSyncTime(new Date());
-        storage.set('study_todos', finalData.todos);
-        storage.set('study_events', finalData.events);
-        storage.set('study_sessions', finalData.studySessions);
-      }
-    } catch (error) { console.error('Cloud Sync Error:', error); } finally { setIsSyncing(false); }
+    if (session) {
+      setIsSyncing(true);
+      try {
+        const response = await fetch('/api/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: finalData }),
+        });
+        if (response.ok) {
+          setLastSyncTime(new Date());
+        }
+      } catch (error) { console.error('Cloud Sync Error:', error); } finally { setIsSyncing(false); }
+    }
+    // Always save to localStorage
+    storage.set('study_todos', finalData.todos);
+    storage.set('study_events', finalData.events);
+    storage.set('study_sessions', finalData.studySessions);
   }, [session, todos, studySessions, events, loginStreak, lastLogin]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (status === 'authenticated' && session) {
+        setIsSyncing(true);
+        try {
+          const res = await fetch('/api/sync');
+          const { data } = await res.json();
+          if (data) {
+            setTodos(data.todos || []);
+            setStudySessions(data.studySessions || {});
+            setEvents(data.events || {});
+            setLoginStreak(data.loginStreak || 0);
+            setLastLogin(data.lastLogin || '');
+            setStudyTimeToday(data.studySessions?.[new Date().toDateString()] || 0);
+          }
+        } finally { setIsSyncing(false); }
+      } else if (status === 'unauthenticated') {
+        // Load from localStorage for demo mode
+        const todosData = await storage.get('study_todos');
+        if (todosData?.value) setTodos(JSON.parse(todosData.value));
+        const eventsData = await storage.get('study_events');
+        if (eventsData?.value) setEvents(JSON.parse(eventsData.value));
+        const sessionsData = await storage.get('study_sessions');
+        if (sessionsData?.value) {
+          const sessions = JSON.parse(sessionsData.value);
+          setStudySessions(sessions);
+          setStudyTimeToday(sessions[new Date().toDateString()] || 0);
+        }
+      }
+    };
+    loadData();
+  }, [status, session]);
 
   // --- Mutations ---
   const handleToggleTodo = async (id: number) => {
