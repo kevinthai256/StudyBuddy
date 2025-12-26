@@ -230,7 +230,7 @@ function StudyDashboardContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <header className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-200">
+        <header className="bg-white rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-200">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <h1 className="text-2xl sm:text-3xl font-black text-gray-900">Hello {session?.user?.name?.split(' ')[0] || '!'}</h1>
             <div className="flex items-center gap-3">
@@ -257,7 +257,7 @@ function StudyDashboardContent() {
 
         {activeTab === 'overview' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
               <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-gray-900"><CheckSquare className="text-blue-700"/>Quick Tasks</h3>
               <div className="space-y-3">
                 {todos.slice(0, 5).map(t => (
@@ -269,13 +269,13 @@ function StudyDashboardContent() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 text-center">
+            <div className="bg-white rounded-lg p-6 border border-gray-200 text-center">
               <h3 className="text-lg font-black mb-4 flex items-center justify-center gap-2 text-gray-900"><Clock className="text-blue-700"/>Focused Time</h3>
               <div className="text-5xl font-black text-blue-800 mb-1">{formatTime(studyTimeToday + getCurrentSessionTime())}</div>
               {isStudying && <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 rounded-full font-black text-xs animate-pulse">LIVE: {formatStopwatch(getCurrentSessionTime())}</div>}
             </div>
 
-            <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
               <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-gray-900"><Calendar className="text-blue-700"/>Schedule</h3>
               <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
                 {Object.entries(events)
@@ -302,19 +302,19 @@ function StudyDashboardContent() {
                 ).filter(Boolean)}
               </div>
             </div>
-            <div className="lg:col-span-3 bg-white rounded-lg shadow-md p-6 border border-gray-200 h-80"><Line data={chartData} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }} /></div>
+            <div className="lg:col-span-3 bg-white rounded-lg p-6 border border-gray-200 h-80"><Line data={chartData} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }} /></div>
           </div>
         )}
 
         {activeTab === 'timer' && (
-          <div className="bg-white rounded-lg shadow-md p-10 border border-gray-200 text-center max-w-2xl mx-auto">
+          <div className="bg-white rounded-lg p-10 border border-gray-200 text-center max-w-2xl mx-auto">
             <div className="text-8xl font-mono font-black text-blue-700 mb-8">{isStudying ? formatStopwatch(getCurrentSessionTime()) : formatStopwatch(studyTimeToday)}</div>
             <button onClick={isStudying ? handleStopStudy : () => { setIsStudying(true); setStudyStartTime(new Date()); }} className={`px-12 py-5 rounded-full font-black text-white text-2xl shadow-xl transform transition hover:scale-105 ${isStudying ? 'bg-red-600' : 'bg-green-600'}`}>{isStudying ? 'Stop' : 'Start Focus'}</button>
           </div>
         )}
 
         {activeTab === 'todos' && (
-          <div className="bg-white rounded-lg shadow-md p-8 border border-gray-200 max-w-2xl mx-auto">
+          <div className="bg-white rounded-lg p-8 border border-gray-200 max-w-2xl mx-auto">
             <div className="flex gap-2 mb-6">
               <input type="text" value={newTodo} onChange={e => setNewTodo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddTodo()} placeholder="New task..." className="flex-1 px-4 py-3 border border-gray-400 rounded-lg text-base font-bold"/>
               <button onClick={handleAddTodo} className="bg-blue-700 text-white px-8 rounded-lg font-black">Add</button>
@@ -332,7 +332,7 @@ function StudyDashboardContent() {
         )}
 
         {activeTab === 'calendar' && (
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <div className="bg-white rounded-lg p-6 border border-gray-200">
             <div className="mb-8 bg-gray-50 p-6 rounded-xl border border-gray-200">
               <h3 className="text-xl font-black mb-4">Add Event</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -340,7 +340,7 @@ function StudyDashboardContent() {
                 <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Time</label><input type="time" value={newEventTime} onChange={e => setNewEventTime(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-base font-bold"/></div>
                 <div className="lg:col-span-2"><label className="block text-xs font-black uppercase text-gray-700 mb-1">Event</label><input type="text" value={newEvent} onChange={e => setNewEvent(e.target.value)} placeholder="Description..." className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-base font-bold"/></div>
               </div>
-              <button onClick={handleAddEvent} className="bg-blue-700 text-white px-10 py-3 rounded-lg font-black shadow-md transition hover:bg-blue-800 active:scale-95">Add Event</button>
+              <button onClick={handleAddEvent} className="bg-blue-700 text-white px-10 py-3 rounded-lg font-black transition hover:bg-blue-800 active:scale-95">Add Event</button>
             </div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-black">{monthNames[selectedDate.getMonth()]} {selectedDate.getFullYear()}</h2>
