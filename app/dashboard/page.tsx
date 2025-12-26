@@ -185,7 +185,7 @@ function StudyDashboardContent() {
           <Link href="/dashboard" className="px-6 py-3 rounded-lg font-black transition-all bg-blue-700 text-white shadow-lg scale-105">Overview</Link>
           <Link href="/timer" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Timer</Link>
           <Link href="/todos" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Tasks</Link>
-          <Link href="/calendar" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Calendar</Link>
+          <Link href="/schedule" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Schedule</Link>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="bg-white rounded-lg p-6 border border-gray-200">
