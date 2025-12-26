@@ -133,6 +133,11 @@ function StudyDashboardContent() {
     }
   };
 
+  const startStudySession = () => {
+    setIsStudying(true);
+    setStudyStartTime(new Date());
+  };
+
   // --- Logic Helpers ---
   const getCurrentSessionTime = (): number => (isStudying && studyStartTime) ? Math.floor((new Date().getTime() - studyStartTime.getTime()) / 1000) : 0;
 
@@ -307,9 +312,82 @@ function StudyDashboardContent() {
         )}
 
         {activeTab === 'timer' && (
-          <div className="bg-white rounded-lg p-10 border border-gray-200 text-center max-w-2xl mx-auto">
-            <div className="text-8xl font-mono font-black text-blue-700 mb-8">{isStudying ? formatStopwatch(getCurrentSessionTime()) : formatStopwatch(studyTimeToday)}</div>
-            <button onClick={isStudying ? handleStopStudy : () => { setIsStudying(true); setStudyStartTime(new Date()); }} className={`px-12 py-5 rounded-full font-black text-white text-2xl shadow-xl transform transition hover:scale-105 ${isStudying ? 'bg-red-600' : 'bg-green-600'}`}>{isStudying ? 'Stop' : 'Start Focus'}</button>
+          <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Study Timer</h2>
+
+
+          <div className="text-center mb-6">
+
+          <div className="text-6xl sm:text-8xl font-mono font-bold text-blue-600 mb-4">
+
+          {isStudying ? formatStopwatch(getCurrentSessionTime()) : formatStopwatch(studyTimeToday)}
+
+          </div>
+
+          <div className="text-lg sm:text-xl text-gray-600 mb-6">
+
+          {isStudying ? 'Currently Studying' : 'Total Today'}
+
+          </div>
+
+
+          <button
+
+          onClick={isStudying ? handleStopStudy : startStudySession}
+
+          className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all transform hover:scale-105 ${
+
+          isStudying
+
+          ? 'bg-red-500 hover:bg-red-600'
+
+          : 'bg-green-500 hover:bg-green-600'
+
+          }`}
+
+          >
+
+          {isStudying ? 'Stop Studying' : 'Start Studying'}
+
+          </button>
+
+          </div>
+
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+          <div className="bg-blue-50 p-4 rounded-lg">
+
+          <h3 className="font-semibold text-blue-800 mb-2">Today's Progress</h3>
+
+          <div className="text-2xl font-bold text-blue-600">{formatTime(studyTimeToday + getCurrentSessionTime())}</div>
+
+          <div className="text-sm text-blue-600">Time spent studying</div>
+
+          </div>
+
+
+          <div className="bg-green-50 p-4 rounded-lg">
+
+          <h3 className="font-semibold text-green-800 mb-2">Current Session</h3>
+
+          <div className="text-2xl font-bold text-green-600">
+
+          {isStudying ? formatStopwatch(getCurrentSessionTime()) : '00:00:00'}
+
+          </div>
+
+          <div className="text-sm text-green-600">
+
+          {isStudying ? 'Active' : 'Not studying'}
+
+          </div>
+
+          </div>
+
+          </div>
+
           </div>
         )}
 
