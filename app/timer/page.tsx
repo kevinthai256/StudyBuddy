@@ -141,7 +141,7 @@ function StudyTimerContent() {
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Study Timer</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-700 mb-4 sm:mb-6">Study Timer</h2>
 
           <div className="text-center mb-6">
             <div className="text-6xl sm:text-8xl font-mono font-bold text-blue-600 mb-4">
