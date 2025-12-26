@@ -278,7 +278,6 @@ function StudyDashboardContent() {
               <h3 className="text-xl font-black text-[var(--color-text-primary)] gap-2 mb-4 flex items-center justify-center w-ful">
                 Tasks
               </h3>
-              <div className="bg-[var(--color-surface)] rounded-lg p-6">
               {/* Progress Bar Container */}
               <div className="mb-6">
                 <div className="flex justify-between items-end mb-2">
@@ -299,30 +298,29 @@ function StudyDashboardContent() {
                       backgroundColor: 'var(--color-primary, #3b82f6)' // Fallback to blue-500 if variable fails
                     }}
                   ></div>
-                </div>
-              </div>    
+                </div>  
             </div>
               <div className="space-y-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
-                {todos.length > 0 ? (
-                  todos.map(t => (
-                    <div key={t.id} className="flex items-center gap-3">
-                      <input 
-                        type="checkbox" 
-                        checked={t.completed} 
-                        onChange={() => handleToggleTodo(t.id)} 
-                        className="w-5 h-5 border-[var(--color-border-secondary)] text-[var(--color-primary)] rounded"
-                      />
-                      <span className={`text-base font-bold truncate ${t.completed ? 'line-through text-[var(--color-text-blue)]' : 'text-[var(--color-text-primary)]'}`}>
-                        {t.text}
-                      </span>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-center text-sm font-bold text-[var(--color-text-secondary)] py-4">
-                    No tasks for today!
-                  </p>
-                )}
-              </div>
+              {todos.length > 0 ? (
+                todos.map(t => (
+                  <div key={t.id} className="flex items-center gap-3">
+                    <input 
+                      type="checkbox" 
+                      checked={t.completed} 
+                      onChange={() => handleToggleTodo(t.id)} 
+                      className="w-5 h-5 border-[var(--color-border-secondary)] text-[var(--color-primary)] rounded"
+                    />
+                    <span className={`text-base font-bold truncate ${t.completed ? 'line-through text-[var(--color-text-blue)]' : 'text-[var(--color-text-primary)]'}`}>
+                      {t.text}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-sm font-bold text-[var(--color-text-secondary)] py-4">
+                  No tasks for today!
+                </p>
+              )}
+            </div>
             </div>
 
             <div className="bg-[var(--color-primary)] rounded-lg py-12 px-6 flex flex-col items-center justify-center w-full h-full">
