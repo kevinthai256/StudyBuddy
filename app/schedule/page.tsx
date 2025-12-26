@@ -127,26 +127,26 @@ function StudyScheduleContent() {
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-3 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-[var(--color-gradient-start)] to-[var(--color-gradient-end)] p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <header className="bg-white rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-200">
+        <header className="bg-[var(--color-surface)] rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-[var(--color-border)]">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-black text-blue-900">Countdown Schedule</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-primary)]">Countdown Schedule</h1>
             <div className="flex items-center gap-3">
               {session && (
-                <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
-                  {isSyncing ? <><Loader2 className="animate-spin text-blue-600" size={16}/><span>Syncing...</span></> : lastSyncTime ? <span className="text-green-700">✓ Synced</span> : null}
+                <div className="flex items-center gap-2 text-sm font-bold text-[var(--color-text-primary)]">
+                  {isSyncing ? <><Loader2 className="animate-spin text-[var(--color-sync-loading)]" size={16}/><span>Syncing...</span></> : lastSyncTime ? <span className="text-[var(--color-sync-success)]">✓ Synced</span> : null}
                 </div>
               )}
-              <div className="flex items-center gap-2 bg-orange-100 px-4 py-2 rounded-lg border border-orange-200">
-                <Flame className="text-orange-600" size={20} />
-                <div className="text-xl sm:text-2xl font-black text-orange-700">{loginStreak} <span className="text-xs font-bold text-gray-700">Streak</span></div>
+              <div className="flex items-center gap-2 bg-[var(--color-streak-bg)] px-4 py-2 rounded-lg border border-[var(--color-border)]">
+                <Flame className="text-[var(--color-accent)]" size={20} />
+                <div className="text-xl sm:text-2xl font-black text-[var(--color-streak-text)]">{loginStreak}</div>
               </div>
             </div>
           </div>
         </header>
 
-        <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="bg-[var(--color-surface)] rounded-lg p-6 border border-[var(--color-border)]">
           <div className="mb-8">
             <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
               {Object.entries(events)
@@ -163,28 +163,28 @@ function StudyScheduleContent() {
                                         key={e.id} 
                                         className={`p-4 rounded-xl border flex items-center justify-between gap-4 sm:gap-6 ${
                                           isToday 
-                                            ? 'bg-blue-50 border-blue-300 border-l-[10px]' 
-                                            : 'bg-gray-50 border-gray-200 border-l-[6px]'
+                                            ? 'bg-[var(--color-surface-secondary)] border-[var(--color-primary)] border-l-[10px]' 
+                                            : 'bg-[var(--color-surface-secondary)] border-[var(--color-border)] border-l-[6px]'
                                         }`}
                                       >
                                         {/* Left Content Area: Holds Date, Countdown, and Description */}
                                         <div className="flex-1 min-w-0"> 
                                           <div className="flex flex-wrap items-center gap-3 mb-2">
                                             {/* Date Text */}
-                                            <span className="text-[14px] sm:text-[16px] font-black uppercase text-gray-600 truncate">
+                                            <span className="text-[14px] sm:text-[16px] font-black uppercase text-[var(--color-text-secondary)] truncate">
                                               {isToday ? 'Today' : new Date(dk).toLocaleDateString('en-US', {month: 'long', day: 'numeric'})}
                                             </span>
                                             
                                             {/* Countdown Box - flex-shrink-0 ensures it never squishes */}
                                             <span className={`text-[12px] sm:text-[14px] font-black px-4 py-1.5 rounded-md shadow-sm flex-shrink-0 min-w-[70px] text-center ${
-                                              isToday ? 'bg-blue-700 text-white animate-pulse' : 'bg-orange-200 text-orange-900'
+                                              isToday ? 'bg-[var(--color-primary)] text-[var(--color-surface)] animate-pulse' : 'bg-[var(--color-accent)] text-[var(--color-surface)]'
                                             }`}>
                                               {cd.toUpperCase()}
                                             </span>
                                           </div>
                                           
                                           {/* Description - truncate or wrap based on preference */}
-                                          <div className="text-lg font-black text-gray-900 leading-tight break-words">
+                                          <div className="text-lg font-black text-[var(--color-text-primary)] leading-tight break-words">
                                             {e.text}
                                           </div>
                                         </div>
@@ -193,7 +193,7 @@ function StudyScheduleContent() {
                                         <div className="flex-shrink-0 self-center">
                                           <button 
                                             onClick={() => handleDeleteEvent(dk, e.id)} 
-                                            className="bg-white border-2 border-emerald-500 text-emerald-600 p-2.5 rounded-full hover:bg-emerald-500 hover:text-white transition-all shadow-sm active:scale-90"
+                                            className="bg-[var(--color-surface)] border-2 border-[var(--color-secondary)] text-[var(--color-secondary)] p-2.5 rounded-full hover:bg-[var(--color-secondary)] hover:text-[var(--color-surface)] transition-all shadow-sm active:scale-90"
                                           >
                                             <CheckSquare size={13}/>
                                           </button>
@@ -205,19 +205,19 @@ function StudyScheduleContent() {
             </div>
           </div>
           <div className="mt-8">
-            <button onClick={() => setIsAddingEvent(!isAddingEvent)} className="w-full flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors font-medium">
+            <button onClick={() => setIsAddingEvent(!isAddingEvent)} className="w-full flex items-center justify-center gap-3 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-[var(--color-surface)] py-3 px-4 rounded-lg transition-colors font-medium">
               <Plus size={20} />
               {isAddingEvent ? 'Hide Add Event' : 'Add Event'}
             </button>
             {isAddingEvent && (
-              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-4">
-                <h3 className="text-xl font-black text-gray-700 mb-4">Add Event</h3>
+              <div className="bg-[var(--color-surface-secondary)] p-6 rounded-xl border border-[var(--color-border)] mt-4">
+                <h3 className="text-xl font-black text-[var(--color-text-primary)] mb-4">Add Event</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                  <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Date</label><input type="date" value={newEventDate} onChange={e => setNewEventDate(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-gray-500 font-bold"/></div>
-                  <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Time</label><input type="time" value={newEventTime} onChange={e => setNewEventTime(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-gray-500 font-bold"/></div>
-                  <div className="lg:col-span-2"><label className="block text-xs font-black uppercase text-gray-700 mb-1">Event</label><input type="text" value={newEvent} onChange={e => setNewEvent(e.target.value)} placeholder="Description..." className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-gray-500 font-bold"/></div>
+                  <div><label className="block text-xs font-black uppercase text-[var(--color-text-secondary)] mb-1">Date</label><input type="date" value={newEventDate} onChange={e => setNewEventDate(e.target.value)} className="w-full px-3 py-3 border border-[var(--color-border-secondary)] bg-[var(--color-surface)] rounded-lg text-[var(--color-text-primary)] font-bold"/></div>
+                  <div><label className="block text-xs font-black uppercase text-[var(--color-text-secondary)] mb-1">Time</label><input type="time" value={newEventTime} onChange={e => setNewEventTime(e.target.value)} className="w-full px-3 py-3 border border-[var(--color-border-secondary)] bg-[var(--color-surface)] rounded-lg text-[var(--color-text-primary)] font-bold"/></div>
+                  <div className="lg:col-span-2"><label className="block text-xs font-black uppercase text-[var(--color-text-secondary)] mb-1">Event</label><input type="text" value={newEvent} onChange={e => setNewEvent(e.target.value)} placeholder="Description..." className="w-full px-3 py-3 border border-[var(--color-border-secondary)] bg-[var(--color-surface)] rounded-lg text-[var(--color-text-primary)] font-bold"/></div>
                 </div>
-                <button onClick={handleAddEvent} className="bg-blue-700 text-white px-10 py-3 rounded-lg font-black transition hover:bg-blue-800 active:scale-95">Add Event</button>
+                <button onClick={handleAddEvent} className="bg-[var(--color-primary)] text-[var(--color-surface)] px-10 py-3 rounded-lg font-black transition hover:bg-[var(--color-primary-hover)] active:scale-95">Add Event</button>
               </div>
             )}
           </div>
@@ -226,25 +226,25 @@ function StudyScheduleContent() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
           <Link 
             href="/dashboard" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] shadow-sm hover:bg-[var(--color-surface-secondary)] active:scale-95 text-sm sm:text-base"
           >
             Overview
           </Link>
           <Link 
             href="/timer" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] shadow-sm hover:bg-[var(--color-surface-secondary)] active:scale-95 text-sm sm:text-base"
           >
             Timer
           </Link>
           <Link 
             href="/todos" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] shadow-sm hover:bg-[var(--color-surface-secondary)] active:scale-95 text-sm sm:text-base"
           >
             Tasks
           </Link>
           <Link 
             href="/schedule" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-blue-700 text-white shadow-lg shadow-blue-200 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-primary)] text-[var(--color-surface)] shadow-lg shadow-blue-200 active:scale-95 text-sm sm:text-base"
           >
             Schedule
           </Link>

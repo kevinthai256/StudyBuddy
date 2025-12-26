@@ -125,39 +125,39 @@ function StudyTimerContent() {
   }, [status, session]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-3 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-[var(--color-gradient-start)] to-[var(--color-gradient-end)] p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <header className="bg-white rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-200">
+        <header className="bg-[var(--color-surface)] rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-[var(--color-border)]">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-black text-blue-900">Study Timer</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-primary)]">Study Timer</h1>
             <div className="flex items-center gap-3">
               {session && (
-                <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
+                <div className="flex items-center gap-2 text-sm font-bold text-[var(--color-text-primary)]">
                   {isSyncing ? <><Loader2 className="animate-spin text-[var(--color-sync-loading)]" size={16}/><span>Syncing...</span></> : lastSyncTime ? <span className="text-[var(--color-sync-success)]">✓ Synced</span> : null}
                 </div>
               )}
-              <div className="flex items-center gap-2 bg-[var(--color-streak-bg)] px-4 py-2 rounded-lg border border-orange-200">
+              <div className="flex items-center gap-2 bg-[var(--color-streak-bg)] px-4 py-2 rounded-lg border border-[var(--color-border)]">
                 <Flame className="text-[var(--color-accent)]" size={20} />
-                <div className="text-xl sm:text-2xl font-black text-[var(--color-streak-text)]">{loginStreak} <span className="text-xs font-bold text-gray-700">Streak</span></div>
+                <div className="text-xl sm:text-2xl font-black text-[var(--color-streak-text)]">{loginStreak}</div>
               </div>
             </div>
           </div>
         </header>
 
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <div className="bg-[var(--color-surface)] rounded-lg shadow-md p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
             <div className="flex-1 text-center mb-4 sm:mb-0">
               <div className="text-6xl sm:text-8xl font-mono font-bold text-[var(--color-primary)] mb-4">
                 {isStudying ? formatStopwatch(getCurrentSessionTime()) : formatStopwatch(studyTimeToday)}
               </div>
-              <div className="text-sm font-black text-gray-500 uppercase tracking-[0.3em] mt-3 mb-6">
+              <div className="text-sm font-black text-[var(--color-text-secondary)] uppercase tracking-[0.3em] mt-3 mb-6">
                 {isStudying ? 'Currently Studying' : "Today's Total"}
               </div>
             </div>
             <div className="sm:ml-6">
               <button
                 onClick={isStudying ? handleStopStudy : startStudySession}
-                className={`px-10 py-5 rounded-lg font-bold text-white text-xl transition-all transform hover:scale-105 ${
+                className={`px-10 py-5 rounded-lg font-bold text-[var(--color-surface)] text-xl transition-all transform hover:scale-105 ${
                   isStudying
                     ? 'bg-[var(--color-error)] hover:bg-[var(--color-error-hover)]'
                     : 'bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)]'
@@ -185,25 +185,25 @@ function StudyTimerContent() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
           <Link 
             href="/dashboard" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] shadow-sm hover:bg-[var(--color-surface-secondary)] active:scale-95 text-sm sm:text-base"
           >
             Dashboard
           </Link>
           <Link 
             href="/timer" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-primary)] text-white shadow-lg shadow-blue-200 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-primary)] text-[var(--color-surface)] shadow-lg shadow-blue-200 active:scale-95 text-sm sm:text-base"
           >
             Timer
           </Link>
           <Link 
             href="/todos" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] shadow-sm hover:bg-[var(--color-surface-secondary)] active:scale-95 text-sm sm:text-base"
           >
             Tasks
           </Link>
           <Link 
             href="/schedule" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] shadow-sm hover:bg-[var(--color-surface-secondary)] active:scale-95 text-sm sm:text-base"
           >
             Schedule
           </Link>
