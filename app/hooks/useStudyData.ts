@@ -3,18 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 
-interface Todo {
-  id: number;
-  text: string;
-  completed: boolean;
-}
-
-interface Event {
-  id: number;
-  text: string;
-  time?: string;
-}
-
+interface Todo { id: number; text: string; completed: boolean; }
+interface Event { id: number; text: string; time?: string; }
 interface DashboardData {
   todos?: Todo[];
   studySessions?: Record<string, number>;
@@ -26,7 +16,6 @@ interface DashboardData {
 export function useStudyData() {
   const { data: session, status } = useSession();
 
-  // State with explicit types
   const [todos, setTodos] = useState<Todo[]>([]);
   const [events, setEvents] = useState<Record<string, Event[]>>({});
   const [studySessions, setStudySessions] = useState<Record<string, number>>({});
@@ -36,42 +25,43 @@ export function useStudyData() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
 
-  // The Safety Gate Ref
+  // This ensures we don't push until we've pulled
   const hasLoadedFromCloud = useRef(false);
 
-  // --- The Unified Sync Engine ---
   const saveData = useCallback(async (overrides: DashboardData = {}) => {
-    // 1. Get latest values from LocalStorage or Overrides
-    const currentTodos = overrides.todos ?? JSON.parse(localStorage.getItem('study_todos') || '[]');
-    const currentEvents = overrides.events ?? JSON.parse(localStorage.getItem('study_events') || '{}');
-    const currentSessions = overrides.studySessions ?? JSON.parse(localStorage.getItem('study_sessions') || '{}');
-    const currentStreak = overrides.loginStreak ?? Number(localStorage.getItem('study_streak') || 0);
-    const currentLastLogin = overrides.lastLogin ?? (localStorage.getItem('study_last_login') || '');
+    // 1. BLOCK PUSHING IF NOT LOADED: On a new device, this prevents 
+    // empty local state from overwriting cloud data.
+    if (status === 'authenticated' && !hasLoadedFromCloud.current) {
+      console.warn("Sync blocked: Initial cloud data not yet merged.");
+      return;
+    }
 
-    // 2. Instant Local Save
-    localStorage.setItem('study_todos', JSON.stringify(currentTodos));
-    localStorage.setItem('study_events', JSON.stringify(currentEvents));
-    localStorage.setItem('study_sessions', JSON.stringify(currentSessions));
-    localStorage.setItem('study_streak', currentStreak.toString());
-    localStorage.setItem('study_last_login', currentLastLogin);
+    // 2. GET LATEST: Prefer overrides, then state, then localStorage
+    const currentTodos = overrides.todos ?? todos;
+    const currentEvents = overrides.events ?? events;
+    const currentSessions = overrides.studySessions ?? studySessions;
+    const currentStreak = overrides.loginStreak ?? loginStreak;
+    const currentLastLogin = overrides.lastLogin ?? lastLogin;
 
-    // 3. Cloud Sync (Only if gate is open)
+    const finalData = {
+      todos: currentTodos,
+      events: currentEvents,
+      studySessions: currentSessions,
+      loginStreak: currentStreak,
+      lastLogin: currentLastLogin,
+    };
+
+    // 3. PERSIST LOCAL
+    localStorage.setItem('study_todos', JSON.stringify(finalData.todos));
+    localStorage.setItem('study_events', JSON.stringify(finalData.events));
+    localStorage.setItem('study_sessions', JSON.stringify(finalData.studySessions));
+    localStorage.setItem('study_streak', finalData.loginStreak.toString());
+    localStorage.setItem('study_last_login', finalData.lastLogin);
+
+    // 4. PERSIST CLOUD
     if (session && status === 'authenticated') {
-      if (!hasLoadedFromCloud.current) {
-        console.warn("Sync blocked: Waiting for initial cloud data pull.");
-        return;
-      }
-
       setIsSyncing(true);
       try {
-        const finalData = {
-          todos: currentTodos,
-          events: currentEvents,
-          studySessions: currentSessions,
-          loginStreak: currentStreak,
-          lastLogin: currentLastLogin,
-        };
-
         const response = await fetch('/api/sync', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -84,14 +74,13 @@ export function useStudyData() {
         setIsSyncing(false);
       }
     }
-  }, [session, status]);
+  }, [session, status, todos, events, studySessions, loginStreak, lastLogin]);
 
-  // --- Initial Data Load ---
   useEffect(() => {
     const load = async () => {
       if (typeof window === 'undefined') return;
 
-      // Load local first
+      // STEP 1: Load Local Storage immediately (Fast UI)
       const lTodos = JSON.parse(localStorage.getItem('study_todos') || '[]');
       const lEvents = JSON.parse(localStorage.getItem('study_events') || '{}');
       const lSessions = JSON.parse(localStorage.getItem('study_sessions') || '{}');
@@ -104,23 +93,34 @@ export function useStudyData() {
       setLoginStreak(lStreak);
       setLastLogin(lLastLogin);
 
+      // STEP 2: If logged in, fetch from Cloud (The Source of Truth)
       if (status === 'authenticated' && session) {
         setIsSyncing(true);
         try {
           const res = await fetch('/api/sync');
           const { data } = await res.json();
+          
           if (data) {
-            setTodos(data.todos || lTodos);
-            setEvents(data.events || lEvents);
-            setStudySessions(data.studySessions || lSessions);
-            setLoginStreak(data.loginStreak || lStreak);
-            setLastLogin(data.lastLogin || lLastLogin);
+            // STEP 3: OVERWRITE LOCAL WITH CLOUD (Critical for new devices)
+            setTodos(data.todos || []);
+            setEvents(data.events || {});
+            setStudySessions(data.studySessions || {});
+            setLoginStreak(data.loginStreak || 0);
+            setLastLogin(data.lastLogin || '');
+
+            // Update LocalStorage immediately so subsequent saves are accurate
+            localStorage.setItem('study_todos', JSON.stringify(data.todos || []));
+            localStorage.setItem('study_events', JSON.stringify(data.events || {}));
+            localStorage.setItem('study_sessions', JSON.stringify(data.studySessions || {}));
+            localStorage.setItem('study_streak', (data.loginStreak || 0).toString());
+            localStorage.setItem('study_last_login', data.lastLogin || '');
           }
-          // OPEN THE GATE
+          
+          // STEP 4: OPEN THE GATE
           hasLoadedFromCloud.current = true;
           setLastSyncTime(new Date());
         } catch (err) {
-          console.error("Load Error:", err);
+          console.error("Cloud Load Error:", err);
         } finally {
           setIsSyncing(false);
         }
@@ -131,14 +131,5 @@ export function useStudyData() {
     load();
   }, [status, session]);
 
-  return { 
-    todos, setTodos, 
-    events, setEvents, 
-    studySessions, setStudySessions, 
-    loginStreak, setLoginStreak,
-    lastLogin, setLastLogin,
-    saveData, 
-    isSyncing, 
-    lastSyncTime 
-  };
+  return { todos, setTodos, events, setEvents, studySessions, setStudySessions, loginStreak, setLoginStreak, lastLogin, setLastLogin, saveData, isSyncing, lastSyncTime };
 }
