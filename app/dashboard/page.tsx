@@ -188,20 +188,36 @@ function StudyDashboardContent() {
       );
     }
 
+    const handleSwitchAccount = async () => {
+      // Sign out first to clear current session
+      await signOut({ redirect: false });
+      // Then sign in with account selection prompt
+      signIn('google', { callbackUrl: '/dashboard', prompt: 'select_account' });
+    };
+
+    const handleSignOut = async () => {
+      // Clear all local storage data
+      if (typeof window !== 'undefined') {
+        localStorage.clear();
+      }
+      // Sign out
+      await signOut({ callbackUrl: '/' });
+    };
+
     return (
       <div className="flex items-center gap-2">
         <button
-          onClick={() => signIn('google')}
-          className="flex items-center gap-2 bg-[var(--color-primary)] text-white px-3 py-2 rounded-lg text-sm"
-          title="Switch account"
+          onClick={handleSwitchAccount}
+          className="flex items-center gap-2 bg-[var(--color-accent)] text-white px-3 py-2 rounded-lg text-sm"
+          title="Switch"
         >
           <User size={16} />
           <span>Switch</span>
         </button>
 
         <button
-          onClick={() => signOut({ callbackUrl: '/' })}
-          className="flex items-center gap-2 bg-[var(--color-surface-secondary)] px-3 py-2 rounded-lg text-sm text-[var(--color-text-accent)]"
+          onClick={handleSignOut}
+          className="flex items-center gap-2 bg-[var(--color-surface-secondary)] px-3 py-2 rounded-lg text-sm text-[var(--color-text-primary)]"
           title="Sign out"
         >
           <LogOut size={16} />
