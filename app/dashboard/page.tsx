@@ -809,7 +809,7 @@ onClick={() => setSelectedDate(date)}
 
 >
 
-<div className="font-semibold text-xs sm:text-base">{day}</div>
+<div className="font-semibold text-xs sm:text-sm">{day}</div>
 
 {dayEvents.length > 0 && (
 
@@ -920,7 +920,7 @@ return (
 
 {session && (
 
-<div className="flex items-center gap-2 text-base text-gray-600">
+<div className="flex items-center gap-2 text-sm text-gray-600">
 
 {isSyncing ? (
 
@@ -964,7 +964,7 @@ return (
 
 {session && (
 
-<div className="mt-2 text-base text-gray-600">
+<div className="mt-2 text-sm text-gray-600">
 
 Signed in as {session.user?.email}
 
@@ -997,7 +997,7 @@ key={tab.id}
 
 onClick={() => setActiveTab(tab.id)}
 
-className={`flex items-center justify-center sm:justify-start gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-all text-base sm:text-base ${
+className={`flex items-center justify-center sm:justify-start gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base ${
 
 activeTab === tab.id
 
@@ -1062,7 +1062,7 @@ style={{ width: `${(todos.filter(t => t.completed).length / todos.length) * 100}
 
 )}
 
-<div className="space-y-2 text-base sm:text-base">
+<div className="space-y-2 text-sm sm:text-base">
 
 {todos.slice(0, 5).map(todo => (
 
@@ -1109,7 +1109,7 @@ Study Time Today
 
 <div className="text-3xl sm:text-4xl font-bold text-blue-600">{formatTime(studyTimeToday + getCurrentSessionTime())}</div>
 
-<div className="text-base sm:text-base text-gray-600">Time Studied</div>
+<div className="text-sm sm:text-base text-gray-600">Time Studied</div>
 
 {isStudying && (
 
@@ -1164,7 +1164,7 @@ return (
 
 <div className="flex items-center justify-between gap-3 mb-2">
 
-<div className="text-xs sm:text-base font-semibold text-gray-600">
+<div className="text-xs sm:text-sm font-semibold text-gray-600">
 
 {new Date(date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
 
@@ -1186,7 +1186,7 @@ return (
 
 {event.time && (
 
-<div className="text-base sm:text-base text-blue-600 font-medium">
+<div className="text-sm sm:text-base text-blue-600 font-medium">
 
 {event.time}
 
@@ -1350,7 +1350,7 @@ isStudying
 
 <div className="text-2xl font-bold text-blue-600">{formatTime(studyTimeToday + getCurrentSessionTime())}</div>
 
-<div className="text-base text-blue-600">Time spent studying</div>
+<div className="text-sm text-blue-600">Time spent studying</div>
 
 </div>
 
@@ -1365,7 +1365,7 @@ isStudying
 
 </div>
 
-<div className="text-base text-green-600">
+<div className="text-sm text-green-600">
 
 {isStudying ? 'Active' : 'Not studying'}
 
@@ -1392,9 +1392,9 @@ isStudying
 
 <div className="flex justify-between items-center mb-2">
 
-<span className="text-base font-medium text-gray-700">Progress</span>
+<span className="text-sm font-medium text-gray-700">Progress</span>
 
-<span className="text-base font-medium text-gray-700">
+<span className="text-sm font-medium text-gray-700">
 
 {todos.filter(t => t.completed).length} / {todos.length} completed
 
@@ -1422,7 +1422,7 @@ style={{ width: `${todos.length > 0 ? (todos.filter(t => t.completed).length / t
 
 </span>
 
-<span className="text-base text-gray-600 ml-1">Complete</span>
+<span className="text-sm text-gray-600 ml-1">Complete</span>
 
 </div>
 
@@ -1444,7 +1444,7 @@ onKeyPress={(e) => e.key === 'Enter' && addTodo()}
 
 placeholder="Add a new task..."
 
-className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base sm:text-base"
+className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
 
 />
 
@@ -1452,7 +1452,7 @@ className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outl
 
 onClick={addTodo}
 
-className="bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2 text-base sm:text-base"
+className="bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2 text-sm sm:text-base"
 
 >
 
@@ -1468,7 +1468,7 @@ Add
 
 {todos.map(todo => (
 
-<div key={todo.id} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-50 rounded-lg text-base sm:text-base">
+<div key={todo.id} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-50 rounded-lg text-sm sm:text-base">
 
 <input
 
@@ -1523,7 +1523,7 @@ className="text-red-500 hover:text-red-700 flex-shrink-0"
 
 <div>
 
-<label className="block text-base font-medium text-gray-700 mb-1">Date</label>
+<label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
 
 <input
 
@@ -1533,7 +1533,7 @@ value={newEventDate}
 
 onChange={(e) => setNewEventDate(e.target.value)}
 
-className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
 
 />
 
@@ -1541,7 +1541,7 @@ className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none
 
 <div>
 
-<label className="block text-base font-medium text-gray-700 mb-1">Time</label>
+<label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
 
 <input
 
@@ -1551,7 +1551,7 @@ value={newEventTime}
 
 onChange={(e) => setNewEventTime(e.target.value)}
 
-className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
 
 />
 
@@ -1559,7 +1559,7 @@ className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none
 
 <div className="sm:col-span-2 lg:col-span-2">
 
-<label className="block text-base font-medium text-gray-700 mb-1">Event</label>
+<label className="block text-sm font-medium text-gray-700 mb-1">Event</label>
 
 <input
 
@@ -1573,7 +1573,7 @@ onKeyPress={(e) => e.key === 'Enter' && addEvent()}
 
 placeholder="Enter event description..."
 
-className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
 
 />
 
@@ -1614,7 +1614,7 @@ className="p-2 hover:bg-gray-100 rounded"
 
 </button>
 
-<span className="font-semibold text-base sm:text-base">
+<span className="font-semibold text-sm sm:text-base">
 
 {monthNames[selectedDate.getMonth()]} {selectedDate.getFullYear()}
 
@@ -1640,7 +1640,7 @@ className="p-2 hover:bg-gray-100 rounded"
 
 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
 
-<div key={day} className="text-center font-semibold p-1 sm:p-2 bg-gray-100 text-xs sm:text-base">
+<div key={day} className="text-center font-semibold p-1 sm:p-2 bg-gray-100 text-xs sm:text-sm">
 
 {day}
 
@@ -1659,7 +1659,7 @@ className="p-2 hover:bg-gray-100 rounded"
 
 <div className="border-t pt-4 sm:pt-6">
 
-<h3 className="font-bold mb-3 text-base sm:text-base">
+<h3 className="font-bold mb-3 text-sm sm:text-base">
 
 Events for {selectedDate.toDateString()}
 
@@ -1673,7 +1673,7 @@ Events for {selectedDate.toDateString()}
 
 .map(event => (
 
-<div key={event.id} className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg text-base sm:text-base">
+<div key={event.id} className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg text-sm sm:text-base">
 
 <span className="break-words flex-1 mr-2">
 
