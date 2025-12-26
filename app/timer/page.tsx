@@ -1,69 +1,32 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Calendar, CheckSquare, Flame, Plus, Trash2, ChevronLeft, ChevronRight, Clock, CloudCheck, CloudOff, Loader2 } from 'lucide-react';
+import { Flame, Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-
-// --- Storage Utility ---
-const storage = {
-  get: async (key: string): Promise<{ value: string } | null> => {
-    if (typeof window === 'undefined') return null;
-    try {
-      const value = localStorage.getItem(key);
-      return value ? { value } : null;
-    } catch { return null; }
-  },
-  set: async (key: string, value: any): Promise<void> => {
-    if (typeof window === 'undefined') return;
-    try {
-      localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
-    } catch { }
-  }
-};
-
-interface DashboardData {
-  studySessions: Record<string, number>;
-  loginStreak: number;
-  lastLogin: string;
-}
+import { useStudyData } from '@/app/hooks/useStudyData';
 
 function StudyTimerContent() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+  const { data: session } = useSession();
   
-  const [loginStreak, setLoginStreak] = useState(0);
-  const [lastLogin, setLastLogin] = useState('');
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
+  // CENTRALIZED HOOK LOGIC
+  const { 
+    studySessions, setStudySessions,
+    loginStreak, 
+    saveData, 
+    isSyncing, 
+    lastSyncTime 
+  } = useStudyData();
 
+  // Local UI State for Timer
+  const [currentTime, setCurrentTime] = useState(new Date());
   const [isStudying, setIsStudying] = useState(false);
   const [studyStartTime, setStudyStartTime] = useState<Date | null>(null);
-  const [studyTimeToday, setStudyTimeToday] = useState(0);
-  const [studySessions, setStudySessions] = useState<Record<string, number>>({});
 
-  // --- Optimized Sync Engine ---
-  const syncData = useCallback(async (overrides: Partial<DashboardData> = {}) => {
-    const finalData = { studySessions, loginStreak, lastLogin, ...overrides };
-    if (session) {
-      setIsSyncing(true);
-      try {
-        const response = await fetch('/api/sync', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ data: finalData }),
-        });
-        if (response.ok) {
-          setLastSyncTime(new Date());
-        }
-      } catch (error) { console.error('Cloud Sync Error:', error); } finally { setIsSyncing(false); }
-    }
-    // Always save to localStorage
-    storage.set('study_sessions', finalData.studySessions);
-  }, [session, studySessions, loginStreak, lastLogin]);
+  const todayKey = new Date().toDateString();
 
+  // --- Mutations ---
   const startStudySession = () => {
     setIsStudying(true);
     setStudyStartTime(new Date());
@@ -72,57 +35,37 @@ function StudyTimerContent() {
   const handleStopStudy = async () => {
     if (studyStartTime) {
       const duration = Math.floor((new Date().getTime() - studyStartTime.getTime()) / 1000);
-      const today = new Date().toDateString();
-      const nextSessions = { ...studySessions, [today]: (studySessions[today] || 0) + duration };
+      const nextSessions = { 
+        ...studySessions, 
+        [todayKey]: (studySessions[todayKey] || 0) + duration 
+      };
+      
       setStudySessions(nextSessions);
-      setStudyTimeToday(nextSessions[today]);
       setIsStudying(false);
       setStudyStartTime(null);
-      await syncData({ studySessions: nextSessions });
+      
+      // Use saveData to ensure todos/events aren't overwritten
+      await saveData({ studySessions: nextSessions });
     }
   };
 
   // --- Logic Helpers ---
-  const getCurrentSessionTime = (): number => (isStudying && studyStartTime) ? Math.floor((new Date().getTime() - studyStartTime.getTime()) / 1000) : 0;
+  const getCurrentSessionTime = (): number => 
+    (isStudying && studyStartTime) ? Math.floor((new Date().getTime() - studyStartTime.getTime()) / 1000) : 0;
 
   const formatTime = (s: number) => {
     const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
     return h > 0 ? `${h}h ${m}m ${sec}s` : m > 0 ? `${m}m ${sec}s` : `${sec}s`;
   };
 
-  const formatStopwatch = (s: number) => `${Math.floor(s / 3600).toString().padStart(2, '0')}:${Math.floor((s % 3600) / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
+  const formatStopwatch = (s: number) => 
+    `${Math.floor(s / 3600).toString().padStart(2, '0')}:${Math.floor((s % 3600) / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
 
+  // Update clock every second when studying, every minute otherwise
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), isStudying ? 1000 : 60000);
     return () => clearInterval(timer);
   }, [isStudying]);
-
-  useEffect(() => {
-    const loadData = async () => {
-      if (status === 'authenticated' && session) {
-        setIsSyncing(true);
-        try {
-          const res = await fetch('/api/sync');
-          const { data } = await res.json();
-          if (data) {
-            setStudySessions(data.studySessions || {});
-            setLoginStreak(data.loginStreak || 0);
-            setLastLogin(data.lastLogin || '');
-            setStudyTimeToday(data.studySessions?.[new Date().toDateString()] || 0);
-          }
-        } finally { setIsSyncing(false); }
-      } else if (status === 'unauthenticated') {
-        // Load from localStorage for demo mode
-        const sessionsData = await storage.get('study_sessions');
-        if (sessionsData?.value) {
-          const sessions = JSON.parse(sessionsData.value);
-          setStudySessions(sessions);
-          setStudyTimeToday(sessions[new Date().toDateString()] || 0);
-        }
-      }
-    };
-    loadData();
-  }, [status, session]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--color-gradient-start)] to-[var(--color-gradient-end)] p-3 sm:p-6">
@@ -148,7 +91,7 @@ function StudyTimerContent() {
           <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
             <div className="flex-1 text-center mb-4 sm:mb-0">
               <div className="text-6xl sm:text-8xl font-mono font-bold text-[var(--color-text-primary)] mb-4">
-                {isStudying ? formatStopwatch(getCurrentSessionTime()) : formatStopwatch(studyTimeToday)}
+                {isStudying ? formatStopwatch(getCurrentSessionTime()) : formatStopwatch(studySessions[todayKey] || 0)}
               </div>
               <div className="text-sm font-black text-[var(--color-text-primary)] uppercase tracking-[0.3em] mt-3 mb-6">
                 {isStudying ? 'Currently Studying' : "Today's Total"}
@@ -157,7 +100,7 @@ function StudyTimerContent() {
             <div className="sm:ml-6">
               <button
                 onClick={isStudying ? handleStopStudy : startStudySession}
-                className={`px-10 py-5 rounded-lg font-bold text-[var(--color-text-primary)] text-xl transition-all transform hover:scale-105 ${
+                className={`px-10 py-5 rounded-lg font-bold text-[var(--color-text-primary)] text-xl transition-all transform hover:scale-105 active:scale-95 ${
                   isStudying
                     ? 'bg-[var(--color-error)] hover:bg-[var(--color-error-hover)]'
                     : 'bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)]'
@@ -171,7 +114,9 @@ function StudyTimerContent() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-[var(--color-surface-secondary)] p-4 rounded-lg">
               <h3 className="font-semibold uppercase text-[var(--color-text-secondary)] tracking-[0.3em] mt-3 mb-2">Today's Total</h3>
-              <div className="text-2xl font-bold text-[var(--color-primary)]">{formatTime(studyTimeToday + getCurrentSessionTime())}</div>
+              <div className="text-2xl font-bold text-[var(--color-primary)]">
+                {formatTime((studySessions[todayKey] || 0) + getCurrentSessionTime())}
+              </div>
             </div>
 
             <div className="bg-[var(--color-surface-secondary)] p-4 rounded-lg">
@@ -183,37 +128,16 @@ function StudyTimerContent() {
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
-          <Link 
-            href="/dashboard" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base"
-          >
-            Dashboard
-          </Link>
-          <Link 
-            href="/timer" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-primary)] text-[var(--color-text-primary)] active:scale-95 text-sm sm:text-base"
-          >
-            Timer
-          </Link>
-          <Link 
-            href="/todos" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base"
-          >
-            Tasks
-          </Link>
-          <Link 
-            href="/schedule" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base"
-          >
-            Schedule
-          </Link>
+          <Link href="/dashboard" className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base">Overview</Link>
+          <Link href="/timer" className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base">Timer</Link>
+          <Link href="/todos" className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base">Tasks</Link>
+          <Link href="/schedule" className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-primary)] text-[var(--color-text-primary)] active:scale-95 text-sm sm:text-base">Schedule</Link>
         </div>
       </div>
     </div>
   );
 }
 
-// Next.js Default Export Wrapper
 export default function StudyTimer() {
   return <StudyTimerContent />;
 }
