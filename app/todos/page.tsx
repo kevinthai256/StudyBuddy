@@ -125,14 +125,14 @@ function StudyTodosContent() {
         </header>
 
         <div className="bg-[var(--color-surface)] rounded-lg p-8 max-w-2xl mx-auto">
-          <div className="flex gap-2 mb-6">
+          <div className="flex flex-col sm:flex-row gap-2 mb-6">
             <input type="text" value={newTodo} onChange={e => setNewTodo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddTodo()} placeholder="New task..." className="flex-1 px-4 py-3 text-[var(--color-text-primary)] border-2 border-[var(--color-background)] rounded-lg text-base font-bold"/>
             <button onClick={handleAddTodo} className="bg-[var(--color-primary)] text-[var(--color-text-primary)] px-8 rounded-lg font-black hover:bg-[var(--color-primary-hover)]">Add</button>
           </div>
           <div className="space-y-3">
             {todos.map(t => (
               <div key={t.id} className="flex items-center gap-3 p-3 bg-[var(--color-surface-secondary)] rounded-lg">
-                <input type="checkbox" checked={t.completed} onChange={() => handleToggleTodo(t.id)} className="w-5 h-5 border-[var(---color-surface-secondary)] text-[var(--color-primary)] rounded"/>
+                <input type="checkbox" checked={t.completed} onChange={() => handleToggleTodo(t.id)} className="w-5 h-5 border-[var(--color-surface-secondary)] text-[var(--color-primary)] rounded"/>
                 <span className={`flex-1 font-bold ${t.completed ? 'line-through text-[var(--color-surface-hover)]' : 'text-[var(--color-surface)]'}`}>{t.text}</span>
                 <button onClick={() => handleDeleteTodo(t.id)} className="text-[var(--color-error)] p-1 hover:text-[var(--color-error-hover)]"><Trash2 size={18}/></button>
               </div>
