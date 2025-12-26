@@ -145,23 +145,27 @@ function StudyTimerContent() {
         </header>
 
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <div className="text-center mb-6">
-            <div className="text-6xl sm:text-8xl font-mono font-bold text-blue-600 mb-4">
-              {isStudying ? formatStopwatch(getCurrentSessionTime()) : formatStopwatch(studyTimeToday)}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex-1 text-center">
+              <div className="text-6xl sm:text-8xl font-mono font-bold text-blue-600 mb-4">
+                {isStudying ? formatStopwatch(getCurrentSessionTime()) : formatStopwatch(studyTimeToday)}
+              </div>
+              <div className="text-sm font-black text-gray-500 uppercase tracking-[0.3em] mt-3 mb-6">
+                {isStudying ? 'Currently Studying' : "Today's Total"}
+              </div>
             </div>
-            <div className="text-sm font-black text-gray-500 uppercase tracking-[0.3em] mt-3 mb-6">
-              {isStudying ? 'Currently Studying' : 'Total Today'}
+            <div className="ml-6">
+              <button
+                onClick={isStudying ? handleStopStudy : startStudySession}
+                className={`px-10 py-5 rounded-lg font-bold text-white text-xl transition-all transform hover:scale-105 ${
+                  isStudying
+                    ? 'bg-red-500 hover:bg-red-600'
+                    : 'bg-green-500 hover:bg-green-600'
+                }`}
+              >
+                {isStudying ? 'STOP!' : 'START!'}
+              </button>
             </div>
-            <button
-              onClick={isStudying ? handleStopStudy : startStudySession}
-              className={`px-8 py-4 rounded-lg font-bold text-white text-lg transition-all transform hover:scale-105 ${
-                isStudying
-                  ? 'bg-red-500 hover:bg-red-600'
-                  : 'bg-green-500 hover:bg-green-600'
-              }`}
-            >
-              {isStudying ? 'STOP!' : 'START!'}
-            </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
