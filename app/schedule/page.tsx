@@ -145,19 +145,12 @@ function StudyScheduleContent() {
           </div>
         </header>
 
-        <div className="flex flex-col sm:flex-row gap-2 mb-6">
-          <Link href="/dashboard" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Overview</Link>
-          <Link href="/timer" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Timer</Link>
-          <Link href="/todos" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Tasks</Link>
-          <Link href="/schedule" className="px-6 py-3 rounded-lg font-black transition-all bg-blue-700 text-white scale-105">Schedule</Link>
-        </div>
-
         <div className="bg-white rounded-lg p-6 border border-gray-200">
           <div className="mb-8 bg-gray-50 p-6 rounded-xl border border-gray-200">
             <h3 className="text-xl font-black text-gray-700 mb-4">Add Event</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-              <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Date</label><input type="date" value={newEventDate} onChange={e => setNewEventDate(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-base font-bold"/></div>
-              <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Time</label><input type="time" value={newEventTime} onChange={e => setNewEventTime(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-base font-bold"/></div>
+              <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Date</label><input type="date" value={newEventDate} onChange={e => setNewEventDate(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-gray-500 font-bold"/></div>
+              <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Time</label><input type="time" value={newEventTime} onChange={e => setNewEventTime(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-gray-500 font-bold"/></div>
               <div className="lg:col-span-2"><label className="block text-xs font-black uppercase text-gray-700 mb-1">Event</label><input type="text" value={newEvent} onChange={e => setNewEvent(e.target.value)} placeholder="Description..." className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-gray-500 font-bold"/></div>
             </div>
             <button onClick={handleAddEvent} className="bg-blue-700 text-white px-10 py-3 rounded-lg font-black transition hover:bg-blue-800 active:scale-95">Add Event</button>
@@ -189,6 +182,12 @@ function StudyScheduleContent() {
               ).filter(Boolean)}
             </div>
           </div>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-2 mb-6">
+          <Link href="/dashboard" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Overview</Link>
+          <Link href="/timer" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Timer</Link>
+          <Link href="/todos" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Tasks</Link>
+          <Link href="/schedule" className="px-6 py-3 rounded-lg font-black transition-all bg-blue-700 text-white scale-105">Schedule</Link>
         </div>
       </div>
     </div>
