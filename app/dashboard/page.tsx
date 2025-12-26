@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Calendar, CheckSquare, Flame, Plus, Trash2, ChevronLeft, ChevronRight, Clock, CloudCheck, CloudOff, Loader2 } from 'lucide-react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { SessionProvider, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -354,9 +354,5 @@ function StudyDashboardContent() {
 
 // Next.js Default Export Wrapper
 export default function StudyDashboard() {
-  return (
-    <SessionProvider>
-      <StudyDashboardContent />
-    </SessionProvider>
-  );
+  return <StudyDashboardContent />;
 }

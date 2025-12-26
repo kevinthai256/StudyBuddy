@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Calendar, CheckSquare, Flame, Plus, Trash2, ChevronLeft, ChevronRight, Clock, CloudCheck, CloudOff, Loader2 } from 'lucide-react';
-import { SessionProvider, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
 // --- Storage Utility ---
@@ -215,9 +215,5 @@ function StudyTimerContent() {
 
 // Next.js Default Export Wrapper
 export default function StudyTimer() {
-  return (
-    <SessionProvider>
-      <StudyTimerContent />
-    </SessionProvider>
-  );
+  return <StudyTimerContent />;
 }

@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { SessionProvider, signIn, useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { BookOpen, LogIn, ArrowRight } from 'lucide-react';
 
 function LoginPageContent() {
@@ -91,9 +91,5 @@ function LoginPageContent() {
 }
 
 export default function LoginPage() {
-  return (
-    <SessionProvider>
-      <LoginPageContent />
-    </SessionProvider>
-  );
+  return <LoginPageContent />;
 }
