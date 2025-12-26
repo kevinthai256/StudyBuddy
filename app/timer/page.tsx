@@ -145,8 +145,8 @@ function StudyTimerContent() {
         </header>
 
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex-1 text-center">
+          <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
+            <div className="flex-1 text-center mb-4 sm:mb-0">
               <div className="text-6xl sm:text-8xl font-mono font-bold text-blue-600 mb-4">
                 {isStudying ? formatStopwatch(getCurrentSessionTime()) : formatStopwatch(studyTimeToday)}
               </div>
@@ -154,7 +154,7 @@ function StudyTimerContent() {
                 {isStudying ? 'Currently Studying' : "Today's Total"}
               </div>
             </div>
-            <div className="ml-6">
+            <div className="sm:ml-6">
               <button
                 onClick={isStudying ? handleStopStudy : startStudySession}
                 className={`px-10 py-5 rounded-lg font-bold text-white text-xl transition-all transform hover:scale-105 ${
