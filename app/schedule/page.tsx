@@ -123,7 +123,7 @@ function StudyScheduleContent() {
       <div className="max-w-7xl mx-auto">
         <header className="bg-white rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-200">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-black text-gray-900">Hello {session?.user?.name?.split(' ')[0] || '!'}</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-gray-900">Hello {session?.user?.name?.split(' ')[0] || '!'}!</h1>
             <div className="flex items-center gap-3">
               {session && (
                 <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
@@ -142,7 +142,7 @@ function StudyScheduleContent() {
           <Link href="/dashboard" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Overview</Link>
           <Link href="/timer" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Timer</Link>
           <Link href="/todos" className="px-6 py-3 rounded-lg font-black transition-all bg-white text-gray-700 border border-gray-200">Tasks</Link>
-          <Link href="/schedule" className="px-6 py-3 rounded-lg font-black transition-all bg-blue-700 text-white shadow-lg scale-105">Schedule</Link>
+          <Link href="/schedule" className="px-6 py-3 rounded-lg font-black transition-all bg-blue-700 text-gray-700 scale-105">Schedule</Link>
         </div>
 
         <div className="bg-white rounded-lg p-6 border border-gray-200">
@@ -153,7 +153,7 @@ function StudyScheduleContent() {
               <div><label className="block text-xs font-black uppercase text-gray-700 mb-1">Time</label><input type="time" value={newEventTime} onChange={e => setNewEventTime(e.target.value)} className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-base font-bold"/></div>
               <div className="lg:col-span-2"><label className="block text-xs font-black uppercase text-gray-700 mb-1">Event</label><input type="text" value={newEvent} onChange={e => setNewEvent(e.target.value)} placeholder="Description..." className="w-full px-3 py-3 border border-gray-400 bg-white rounded-lg text-base font-bold"/></div>
             </div>
-            <button onClick={handleAddEvent} className="bg-blue-700 text-white px-10 py-3 rounded-lg font-black transition hover:bg-blue-800 active:scale-95">Add Event</button>
+            <button onClick={handleAddEvent} className="bg-blue-700 text-gray-600 px-10 py-3 rounded-lg font-black transition hover:bg-blue-800 active:scale-95">Add Event</button>
           </div>
           <div className="mt-8">
             <h3 className="font-black text-xl mb-4 uppercase">Upcoming Events</h3>
