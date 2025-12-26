@@ -49,7 +49,7 @@ function LoginPageContent() {
         <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
           <button
             onClick={handleSignInWithGoogle}
-            className="w-full flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors font-medium"
+            className="w-full flex items-center justify-center gap-3 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white py-3 px-4 rounded-lg transition-colors font-medium"
           >
             <LogIn size={20} />
             Sign in with Google
@@ -66,13 +66,13 @@ function LoginPageContent() {
 
           <button
             onClick={handleContinueWithoutSaving}
-            className="w-full flex items-center justify-center gap-3 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-lg transition-colors font-medium"
+            className="w-full flex items-center justify-center gap-3 bg-[var(--color-surface-secondary)] hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-lg transition-colors font-medium"
           >
             <ArrowRight size={20} />
             Continue with Demo Mode
           </button>
 
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+          <div className="mt-6 p-4 bg-[var(--color-surface-secondary)] rounded-lg">
             <p className="text-xs text-blue-600">
               Sign in with Google to sync your progress across devices. Continue in Demo Mode to use the app locally without saving progress.
             </p>

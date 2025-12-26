@@ -133,12 +133,12 @@ function StudyTimerContent() {
             <div className="flex items-center gap-3">
               {session && (
                 <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
-                  {isSyncing ? <><Loader2 className="animate-spin text-blue-600" size={16}/><span>Syncing...</span></> : lastSyncTime ? <span className="text-green-700">✓ Synced</span> : null}
+                  {isSyncing ? <><Loader2 className="animate-spin text-[var(--color-sync-loading)]" size={16}/><span>Syncing...</span></> : lastSyncTime ? <span className="text-[var(--color-sync-success)]">✓ Synced</span> : null}
                 </div>
               )}
-              <div className="flex items-center gap-2 bg-orange-100 px-4 py-2 rounded-lg border border-orange-200">
-                <Flame className="text-orange-600" size={20} />
-                <div className="text-xl sm:text-2xl font-black text-orange-700">{loginStreak} <span className="text-xs font-bold text-gray-700">Streak</span></div>
+              <div className="flex items-center gap-2 bg-[var(--color-streak-bg)] px-4 py-2 rounded-lg border border-orange-200">
+                <Flame className="text-[var(--color-accent)]" size={20} />
+                <div className="text-xl sm:text-2xl font-black text-[var(--color-streak-text)]">{loginStreak} <span className="text-xs font-bold text-gray-700">Streak</span></div>
               </div>
             </div>
           </div>
@@ -147,7 +147,7 @@ function StudyTimerContent() {
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
             <div className="flex-1 text-center mb-4 sm:mb-0">
-              <div className="text-6xl sm:text-8xl font-mono font-bold text-blue-600 mb-4">
+              <div className="text-6xl sm:text-8xl font-mono font-bold text-[var(--color-primary)] mb-4">
                 {isStudying ? formatStopwatch(getCurrentSessionTime()) : formatStopwatch(studyTimeToday)}
               </div>
               <div className="text-sm font-black text-gray-500 uppercase tracking-[0.3em] mt-3 mb-6">
@@ -159,8 +159,8 @@ function StudyTimerContent() {
                 onClick={isStudying ? handleStopStudy : startStudySession}
                 className={`px-10 py-5 rounded-lg font-bold text-white text-xl transition-all transform hover:scale-105 ${
                   isStudying
-                    ? 'bg-red-500 hover:bg-red-600'
-                    : 'bg-green-500 hover:bg-green-600'
+                    ? 'bg-[var(--color-error)] hover:bg-[var(--color-error-hover)]'
+                    : 'bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)]'
                 }`}
               >
                 {isStudying ? 'STOP!' : 'START!'}
@@ -169,14 +169,14 @@ function StudyTimerContent() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-semibold uppercase text-blue-800 tracking-[0.3em] mt-3 mb-2">Today's Total</h3>
-              <div className="text-2xl font-bold text-blue-600">{formatTime(studyTimeToday + getCurrentSessionTime())}</div>
+            <div className="bg-[var(--color-surface-secondary)] p-4 rounded-lg">
+              <h3 className="font-semibold uppercase text-[var(--color-text-secondary)] tracking-[0.3em] mt-3 mb-2">Today's Total</h3>
+              <div className="text-2xl font-bold text-[var(--color-primary)]">{formatTime(studyTimeToday + getCurrentSessionTime())}</div>
             </div>
 
-            <div className="bg-green-50 p-4 rounded-lg">
-              <h3 className="font-semibold uppercase text-green-800 tracking-[0.3em] mt-3 mb-2">Current Session</h3>
-              <div className="text-2xl font-bold text-green-600">
+            <div className="bg-[var(--color-surface-secondary)] p-4 rounded-lg">
+              <h3 className="font-semibold uppercase text-[var(--color-text-secondary)] tracking-[0.3em] mt-3 mb-2">Current Session</h3>
+              <div className="text-2xl font-bold text-[var(--color-secondary)]">
                 {isStudying ? formatStopwatch(getCurrentSessionTime()) : '00:00:00'}
               </div>
             </div>
@@ -191,7 +191,7 @@ function StudyTimerContent() {
           </Link>
           <Link 
             href="/timer" 
-            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-blue-700 text-white shadow-lg shadow-blue-200 active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-primary)] text-white shadow-lg shadow-blue-200 active:scale-95 text-sm sm:text-base"
           >
             Timer
           </Link>

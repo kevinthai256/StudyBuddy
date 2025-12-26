@@ -50,25 +50,7 @@ function AuthControls() {
 export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
-      <div className="min-h-screen flex flex-col bg-slate-50">
-        <header className="w-full bg-white border-b border-gray-200 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-14">
-              <Link href="/" className="flex items-center gap-3">
-                <img src="/icon0.svg" alt="StudyBuddy" className="w-8 h-8" />
-                <span className="font-bold text-gray-800">StudyBuddy</span>
-              </Link>
-              <div className="flex items-center gap-2">
-                <AuthControls />
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <main className="flex-1 pt-14">
-          {children}
-        </main>
-      </div>
+      {children}
     </SessionProvider>
   );
 }

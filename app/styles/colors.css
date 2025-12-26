@@ -1,0 +1,41 @@
+/* Color theme configuration */
+/* Change these hex values to customize the app's colors */
+
+:root {
+  /* Primary colors */
+  --color-primary: #3B82F6;        /* Main blue (buttons, links) */
+  --color-primary-hover: #2563EB;   /* Darker blue for hover states */
+  --color-secondary: #10B981;      /* Main green (success, session) */
+  --color-secondary-hover: #059669; /* Darker green for hover */
+  --color-accent: #FF8C00;         /* Orange (streak, highlights) */
+  --color-accent-hover: #E67E22;    /* Darker orange */
+
+  /* Backgrounds */
+  --color-background: #ffffff;     /* Main background */
+  --color-surface: #ffffff;        /* Card/surface backgrounds */
+  --color-surface-secondary: #F9FAFB; /* Secondary surfaces */
+  --color-gradient-start: #DBEAFE;  /* Gradient start (blue-50) */
+  --color-gradient-end: #E0E7FF;    /* Gradient end (indigo-100) */
+
+  /* Text colors */
+  --color-text-primary: #1F2937;    /* Main text */
+  --color-text-secondary: #6B7280;  /* Secondary text */
+  --color-text-muted: #9CA3AF;      /* Muted text */
+
+  /* Borders and dividers */
+  --color-border: #E5E7EB;         /* Light borders */
+  --color-border-secondary: #D1D5DB; /* Secondary borders */
+
+  /* Status colors */
+  --color-success: #10B981;        /* Success states */
+  --color-warning: #F59E0B;        /* Warning states */
+  --color-error: #EF4444;          /* Error states */
+  --color-error-hover: #DC2626;    /* Error hover */
+
+  /* Specific component colors */
+  --color-timer-display: #FF8C00;   /* Today's total container */
+  --color-streak-bg: #FED7AA;       /* Streak background */
+  --color-streak-text: #9A3412;     /* Streak text */
+  --color-sync-success: #10B981;    /* Sync success */
+  --color-sync-loading: #3B82F6;    /* Sync loading */
+}

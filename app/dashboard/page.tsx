@@ -3,10 +3,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Calendar, CheckSquare, Flame, Plus, Trash2, ChevronLeft, ChevronRight, Clock, CloudCheck, CloudOff, Loader2 } from 'lucide-react';
+import { Calendar, CheckSquare, Flame, Plus, Trash2, ChevronLeft, ChevronRight, Clock, CloudCheck, CloudOff, Loader2, LogIn, LogOut, User } from 'lucide-react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -171,6 +171,46 @@ function StudyDashboardContent() {
 
   const formatStopwatch = (s: number) => `${Math.floor(s / 3600).toString().padStart(2, '0')}:${Math.floor((s % 3600) / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
 
+  function AuthControls() {
+    if (status === 'loading') {
+      return <div className="px-3 py-2 rounded bg-gray-100 text-sm">Loading...</div>;
+    }
+
+    if (!session) {
+      return (
+        <button
+          onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+          className="flex items-center gap-2 bg-[var(--color-primary)] text-white px-3 py-2 rounded-lg text-sm"
+        >
+          <LogIn size={16} />
+          <span>Sign in</span>
+        </button>
+      );
+    }
+
+    return (
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => signIn('google')}
+          className="flex items-center gap-2 bg-[var(--color-accent)] text-white px-3 py-2 rounded-lg text-sm"
+          title="Switch account"
+        >
+          <User size={16} />
+          <span>Switch</span>
+        </button>
+
+        <button
+          onClick={() => signOut({ callbackUrl: '/' })}
+          className="flex items-center gap-2 bg-[var(--color-surface-secondary)] px-3 py-2 rounded-lg text-sm text-[var(--color-text-primary)]"
+          title="Sign out"
+        >
+          <LogOut size={16} />
+          <span>Sign out</span>
+        </button>
+      </div>
+    );
+  }
+
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), isStudying ? 1000 : 60000);
     return () => clearInterval(timer);
@@ -205,13 +245,14 @@ function StudyDashboardContent() {
             <div className="flex items-center gap-3">
               {session && (
                 <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
-                  {isSyncing ? <><Loader2 className="animate-spin text-blue-600" size={16}/><span>Syncing...</span></> : lastSyncTime ? <span className="text-green-700">✓ Synced</span> : null}
+                  {isSyncing ? <><Loader2 className="animate-spin text-[var(--color-sync-loading)]" size={16}/><span>Syncing...</span></> : lastSyncTime ? <span className="text-[var(--color-sync-success)]">✓ Synced</span> : null}
                 </div>
               )}
-              <div className="flex items-center gap-2 bg-orange-100 px-4 py-2 rounded-lg border border-orange-200">
-                <Flame className="text-orange-600" size={20} />
-                <div className="text-xl sm:text-2xl font-black text-orange-700">{loginStreak} <span className="text-xs font-bold text-gray-700">Streak</span></div>
+              <div className="flex items-center gap-2 bg-[var(--color-streak-bg)] px-4 py-2 rounded-lg border border-orange-200">
+                <Flame className="text-[var(--color-accent)]" size={20} />
+                <div className="text-xl sm:text-2xl font-black text-[var(--color-streak-text)]">{loginStreak}</div>
               </div>
+              <AuthControls />
             </div>
           </div>
         </header>
@@ -231,7 +272,7 @@ function StudyDashboardContent() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg py-12 px-6 border border-gray-200 shadow-sm flex flex-col items-center justify-center w-full h-full">
+            <div className="bg-[var(--color-timer-display)] rounded-lg py-12 px-6 border border-gray-200 shadow-sm flex flex-col items-center justify-center w-full h-full">
 
             {/* Time Display Section */}
             <div className="flex flex-col items-center justify-center flex-1 w-full">
@@ -240,8 +281,13 @@ function StudyDashboardContent() {
                 {formatTime(studyTimeToday + getCurrentSessionTime())}
               </div>
               
-              <div className="text-sm font-black text-gray-500 uppercase tracking-[0.3em] mt-3">
-                Today's Total
+              {/* Container must be relative so the icon stays inside */}
+              <div className="relative flex items-center justify-center w-full mt-6 h-12 px-6">
+                
+                {/* The Text - Centered and bold */}
+                <span className="text-sm font-black text-gray-500 uppercase tracking-[0.3em] z-10">
+                  Today's Total
+                </span>
               </div>
 
               {/* Live Status Section */}
