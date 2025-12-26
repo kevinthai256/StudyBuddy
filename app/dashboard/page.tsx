@@ -217,7 +217,7 @@ function StudyDashboardContent() {
 
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-2 bg-[var(--color-surface-secondary)] px-3 py-2 rounded-lg text-sm text-[var(--color-text-primary)]"
+          className="flex items-center gap-2 bg-[var(--color-surface-secondary)] px-3 py-2 rounded-lg text-sm text-[var(--color-text-accent)]"
           title="Sign out"
         >
           <LogOut size={16} />
