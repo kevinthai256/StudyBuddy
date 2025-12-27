@@ -84,16 +84,23 @@ function StudyTodosContent() {
           </div>
           <div className="space-y-3">
             {todos.map(t => (
-              <div key={t.id} className="flex items-center gap-3 p-3 bg-[var(--color-surface-secondary)] rounded-lg">
+              <div key={t.id} className="group flex items-center gap-3 p-1 bg-[var(--color-surface-secondary)] rounded-lg hover:bg-[var(--color-surface-hover)] transition-colors">
+                <label className="flex flex-1 items-center gap-4 p-3 cursor-pointer">
                 <input 
-                  type="checkbox" 
-                  checked={t.completed} 
-                  onChange={() => handleToggleTodo(t.id)} 
-                  className="w-5 h-5 border-[var(--color-surface-secondary)] text-[var(--color-primary)] rounded cursor-pointer"
-                />
-                <span className={`flex-1 font-bold ${t.completed ? 'line-through text-[var(--color-surface-hover)]' : 'text-[var(--color-surface)]'}`}>
-                  {t.text}
+                    type="checkbox" 
+                    checked={t.completed} 
+                    onChange={() => handleToggleTodo(t.id)} 
+                    // Increased size for easier mobile tapping
+                    className="w-6 h-6 border-[var(--color-surface-secondary)] text-[var(--color-primary)] rounded cursor-pointer accent-[var(--color-primary)]"
+                    />
+                <span className={`flex-1 font-bold text-lg select-none ${
+                    t.completed 
+                        ? 'line-through text-[var(--color-text-muted)] opacity-50' 
+                        : 'text-[var(--color-text-primary)]'
+                    }`}>
+                    {t.text}
                 </span>
+                </label>
                 <button 
                   onClick={() => handleDeleteTodo(t.id)} 
                   className="text-[var(--color-error)] p-1 hover:text-[var(--color-error-hover)] transition-colors"
