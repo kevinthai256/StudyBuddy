@@ -96,7 +96,7 @@ function StudyTodosContent() {
                 <span className={`flex-1 font-bold text-lg select-none ${
                     t.completed 
                         ? 'line-through text-[var(--color-text-muted)] opacity-50' 
-                        : 'text-[var(--color-text-primary)]'
+                        : 'text-[var(--color-text-secondary)]'
                     }`}>
                     {t.text}
                 </span>
