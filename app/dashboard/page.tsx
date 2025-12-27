@@ -154,34 +154,47 @@ function StudyDashboardContent() {
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="space-y-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
-              {todos.length > 0 ? (
-                todos.map(t => (
-                  <label 
-                    key={t.id} 
-                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer group"
-                  >
-                    <input 
-                      type="checkbox" 
-                      checked={t.completed} 
-                      onChange={() => handleToggleTodo(t.id)} 
-                      className="w-5 h-5 border-[var(--color-border-secondary)] text-[var(--color-primary)] rounded cursor-pointer accent-[var(--color-primary)]"
-                    />
-                    <span className={`text-base font-bold truncate flex-1 select-none ${
-                      t.completed 
-                        ? 'line-through text-[var(--color-text-blue)] opacity-60' 
-                        : 'text-[var(--color-text-primary)]'
-                    }`}>
-                      {t.text}
-                    </span>
-                  </label>
-                ))
-              ) : (
-                <p className="text-center text-sm font-bold text-[var(--color-text-secondary)] py-4">
-                  No tasks for today!
-                </p>
-              )}
-            </div>
+            <div className="bg-[var(--color-surface)] rounded-lg p-6">
+              <h3 className="text-xl font-black text-[var(--color-text-primary)] gap-2 mb-4 flex items-center justify-center w-ful">Tasks</h3>
+              <div className="mb-6">
+                <div className="flex justify-between items-end mb-2">
+                  <span className="text-sm font-black text-[var(--color-text-primary)] uppercase">Completion</span>
+                  <span className="text-sm font-black text-[var(--color-text-primary)]">
+                    {todos.length > 0 ? Math.round((todos.filter(t => t.completed).length / todos.length) * 100) : 0}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden border-4 border-white">
+                  <div className="h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${todos.length > 0 ? (todos.filter(t => t.completed).length / todos.length) * 100 : 0}%`, backgroundColor: 'var(--color-primary, #3b82f6)' }}></div>
+                </div>  
+              </div>
+              <div className="space-y-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                {todos.length > 0 ? (
+                  todos.map(t => (
+                    <label 
+                      key={t.id} 
+                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer group"
+                    >
+                      <input 
+                        type="checkbox" 
+                        checked={t.completed} 
+                        onChange={() => handleToggleTodo(t.id)} 
+                        className="w-5 h-5 border-[var(--color-border-secondary)] text-[var(--color-primary)] rounded cursor-pointer accent-[var(--color-primary)]"
+                      />
+                      <span className={`text-base font-bold truncate flex-1 select-none ${
+                        t.completed 
+                          ? 'line-through text-[var(--color-text-blue)] opacity-60' 
+                          : 'text-[var(--color-text-primary)]'
+                      }`}>
+                        {t.text}
+                      </span>
+                    </label>
+                  ))
+                ) : (
+                  <p className="text-center text-sm font-bold text-[var(--color-text-secondary)] py-4">
+                    No tasks for today!
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="bg-[var(--color-primary)] rounded-lg py-12 px-6 flex flex-col items-center justify-center w-full h-full">
@@ -250,6 +263,7 @@ function StudyDashboardContent() {
           <Link href="/schedule" className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base">Schedule</Link>
         </div>
       </div>
+    </div>
   );
 }
 
