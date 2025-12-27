@@ -250,7 +250,6 @@ function StudyDashboardContent() {
           <Link href="/schedule" className="flex items-center justify-center px-4 py-4 rounded-xl font-black transition-all bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] active:scale-95 text-sm sm:text-base">Schedule</Link>
         </div>
       </div>
-    </div>
   );
 }
 
