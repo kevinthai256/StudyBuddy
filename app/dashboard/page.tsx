@@ -155,7 +155,7 @@ function StudyDashboardContent() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="bg-[var(--color-surface)] rounded-lg p-6">
-              <h3 className="text-xl font-black text-[var(--color-text-primary)] gap-2 mb-4 flex items-center justify-center w-ful">Tasks</h3>
+              <h3 className="text-xl font-black text-[var(--color-text-primary)] gap-2 mb-4 flex items-center justify-center w-full">Tasks</h3>
               <div className="mb-6">
                 <div className="flex justify-between items-end mb-2">
                   <span className="text-sm font-black text-[var(--color-text-primary)] uppercase">Completion</span>
