@@ -54,12 +54,16 @@ function StudyScheduleContent() {
   };
 
   const handleDeleteEvent = async (dateKey: string, eventId: number) => {
-    const nextEvents = { ...events };
+  const nextEvents = { ...events };
+  if (nextEvents[dateKey]) {
     nextEvents[dateKey] = nextEvents[dateKey].filter(e => e.id !== eventId);
-    if (nextEvents[dateKey]?.length === 0) delete nextEvents[dateKey];
-    
-    setEvents(nextEvents);
-    await saveData({ events: nextEvents });
+    if (nextEvents[dateKey].length === 0) {
+      delete nextEvents[dateKey];
+    }
+  }
+  // Update local state and save
+  setEvents(nextEvents);
+  await saveData({ events: nextEvents });
   };
 
   // --- Logic Helpers ---
