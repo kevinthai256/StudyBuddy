@@ -50,7 +50,12 @@ function StudyDashboardContent() {
   setEvents(nextEvents);
   await saveData({ events: nextEvents });
   };
-
+  const priorityStyles: Record<string, string> = {
+    'Critical': 'bg-white text-red-500 border-red-500/20',
+    'High': 'bg-white text-orange-500 border-orange-500/20',
+    'Medium': 'bg-white text-yellow-500 border-yellow-500/20',
+    'Low': 'bg-white text-blue-500 border-blue-500/20',
+  };
   // --- Logic Helpers ---
   const getCurrentSessionTime = (): number => (isStudying && studyStartTime) ? Math.floor((new Date().getTime() - studyStartTime.getTime()) / 1000) : 0;
 
@@ -192,6 +197,10 @@ function StudyDashboardContent() {
                       }`}>
                         {t.text}
                       </span>
+                      <div className={`w-fit px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider border ${priorityStyles[t.priority] || priorityStyles['Medium']
+                        } ${t.completed ? 'opacity-40 grayscale' : ''}`}>
+                        {t.priority || 'Medium'}
+                      </div>
                     </label>
                   ))
                 ) : (

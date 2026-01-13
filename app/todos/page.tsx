@@ -23,11 +23,32 @@ function StudyTodosContent() {
 
   // Local UI State for the input field
   const [newTodo, setNewTodo] = useState('');
-  
+  const [priority, setPriority] = useState('Low');
   const [enabled, setEnabled] = React.useState(false);
   React.useEffect(() => {
     setEnabled(true);
   }, []);
+
+  const priorityWeight: Record<string, number> = {
+    'Critical': 0,
+    'High': 1,
+    'Medium': 2,
+    'Low': 3
+  };
+
+  const priorities = [
+    { label: 'Low', color: 'bg-white text-blue-500' },
+    { label: 'Medium', color: 'bg-white text-yellow-500' },
+    { label: 'High', color: 'bg-white text-orange-500' },
+    { label: 'Critical', color: 'bg-white text-red-500' }
+  ];
+
+  const priorityStyles: Record<string, string> = {
+    'Critical': 'bg-red-500/20 text-red-500 border-red-500/20',
+    'High': 'bg-orange-500/20 text-orange-500 border-orange-500/20',
+    'Medium': 'bg-yellow-500/20 text-yellow-500 border-yellow-500/20',
+    'Low': 'bg-blue-500/20 text-blue-500 border-blue-500/20',
+  };
 
   const onDragEnd = async (result: any) => {
     if (!result.destination) return;
@@ -43,10 +64,28 @@ function StudyTodosContent() {
   // --- Mutations ---
   const handleAddTodo = async () => {
     if (!newTodo.trim()) return;
-    const nextTodos = [...todos, { id: Date.now(), text: newTodo, completed: false }];
-    setTodos(nextTodos); // Instant UI update
+
+    const newTodoItem = {
+      id: Date.now(),
+      text: newTodo,
+      completed: false,
+      priority: priority
+    };
+
+    // Find where to insert based on priority weight
+    let insertionIndex = todos.findIndex(
+      (t: any) => priorityWeight[t.priority || 'Medium'] > priorityWeight[priority]
+    );
+
+    if (insertionIndex === -1) insertionIndex = todos.length;
+
+    const nextTodos = [...todos];
+    nextTodos.splice(insertionIndex, 0, newTodoItem);
+
+    setTodos(nextTodos);
     setNewTodo('');
-    // Use saveData to ensure other data (events/sessions) is preserved
+    setPriority('Medium'); // Reset to default after adding
+
     await saveData({ todos: nextTodos });
   };
 
@@ -82,7 +121,6 @@ function StudyTodosContent() {
             </div>
           </div>
         </header>
-
         <div className="bg-[var(--color-surface)] rounded-lg p-8 max-w-2xl mx-auto">
           <div className="flex flex-col sm:flex-row gap-2 mb-6">
             <input
@@ -99,6 +137,20 @@ function StudyTodosContent() {
             >
               Add
             </button>
+          </div>
+          <div className="flex items-center gap-3 mb-6">
+            {priorities.map((p) => (
+              <button
+                key={p.label}
+                onClick={() => setPriority(p.label)}
+                className={`px-3 py-1 rounded-md text-xs font-black transition-all ${priority === p.label
+                  ? `${p.color} ring-2 ring-offset-2 ring-offset-[var(--color-surface)] ring-current`
+                  : 'bg-[var(--color-surface-secondary)] text-[var(--color-text-muted)] opacity-60'
+                  }`}
+              >
+                {p.label}
+              </button>
+            ))}
           </div>
 
           {/* DRAG AND DROP SECTION START */}
@@ -118,8 +170,8 @@ function StudyTodosContent() {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             className={`group flex items-center gap-3 p-1 rounded-lg transition-all ${snapshot.isDragging
-                                ? 'bg-[var(--color-surface-hover)] shadow-2xl scale-[1.02] z-50'
-                                : 'bg-[var(--color-surface-secondary)] hover:bg-[var(--color-surface-hover)]'
+                              ? 'bg-[var(--color-surface-hover)] shadow-2xl scale-[1.02] z-50'
+                              : 'bg-[var(--color-surface-secondary)] hover:bg-[var(--color-surface-hover)]'
                               }`}
                           >
                             {/* Drag Handle Icon */}
@@ -130,21 +182,28 @@ function StudyTodosContent() {
                               <GripVertical size={20} />
                             </div>
 
-                            <label className="flex flex-1 items-center gap-4 p-3 cursor-pointer">
+                            <label className="flex flex-1 items-center gap-4 p-3 cursor-pointer min-w-0">
                               <input
                                 type="checkbox"
                                 checked={t.completed}
                                 onChange={() => handleToggleTodo(t.id)}
-                                className="w-6 h-6 border-[var(--color-surface-secondary)] text-[var(--color-primary)] rounded cursor-pointer accent-[var(--color-primary)]"
+                                className="w-6 h-6 border-[var(--color-surface-secondary)] text-[var(--color-primary)] rounded cursor-pointer accent-[var(--color-primary)] shrink-0"
                               />
-                              <span className={`flex-1 font-bold text-lg select-none ${t.completed
-                                  ? 'line-through text-[var(--color-text-muted)] opacity-50'
-                                  : 'text-[var(--color-text-secondary)]'
-                                }`}>
-                                {t.text}
-                              </span>
-                            </label>
 
+                              <div className="flex flex-col gap-1 min-w-0">
+                                {/* The Task Text */}
+                                <span className={`font-bold text-lg select-none break-words leading-tight ${t.completed
+                                    ? 'line-through text-[var(--color-text-muted)] opacity-50'
+                                    : 'text-[var(--color-text-secondary)]'
+                                  }`}>
+                                  {t.text}
+                                </span>
+                              </div>
+                            </label>
+                            <div className={`w-fit px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider border ${priorityStyles[t.priority] || priorityStyles['Medium']
+                                  } ${t.completed ? 'opacity-40 grayscale' : ''}`}>
+                                  {t.priority || 'Medium'}
+                                </div>
                             <button
                               onClick={() => handleDeleteTodo(t.id)}
                               className="text-[var(--color-error)] pr-3 hover:text-[var(--color-error-hover)] transition-colors"

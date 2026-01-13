@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 
-interface Todo { id: number; text: string; completed: boolean; }
+interface Todo { id: number; text: string; completed: boolean; priority: string; }
 interface Event { id: number; text: string; time?: string; }
 interface DashboardData {
   todos?: Todo[];
