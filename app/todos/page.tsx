@@ -23,7 +23,7 @@ function StudyTodosContent() {
 
   // Local UI State for the input field
   const [newTodo, setNewTodo] = useState('');
-  const [priority, setPriority] = useState('Low');
+  const [priority, setPriority] = useState('Medium');
   const [enabled, setEnabled] = React.useState(false);
   React.useEffect(() => {
     setEnabled(true);
